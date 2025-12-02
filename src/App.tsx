@@ -25,6 +25,10 @@ interface AppContextType {
   setIsDark: (value: boolean) => void;
   filter: string;
   setFilter: (value: string) => void;
+  difficultyFilter: string;
+  setDifficultyFilter: (value: string) => void;
+  dateFilter: string;
+  setDateFilter: (value: string) => void;
   isModalOpen: boolean;
   setIsModalOpen: (value: boolean) => void;
   user: User | null;
@@ -41,7 +45,7 @@ export const useAppContext = () => {
 
 function AppContent() {
   const location = useLocation();
-  const { isDark, setIsDark, filter, setFilter, setIsModalOpen, user, setUser } = useAppContext();
+  const { isDark, setIsDark, filter, setFilter, difficultyFilter, setDifficultyFilter, dateFilter, setDateFilter, setIsModalOpen, user, setUser } = useAppContext();
   const isHome = location.pathname === '/';
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -71,6 +75,15 @@ function AppContent() {
     localStorage.removeItem('user');
   };
 
+  const handleLogoClick = () => {
+    // Reset tutti i filtri
+    setFilter('all');
+    setDifficultyFilter('all');
+    setDateFilter('all');
+    // Scroll to top
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   return (
     <>
       {/* ========== HEADER DESKTOP - Hidden on Mobile ========== */}
@@ -81,6 +94,7 @@ function AppContent() {
             <div className="flex justify-center">
               <Link
                 to="/"
+                onClick={handleLogoClick}
                 className="flex items-center gap-2 px-4 py-2.5 bg-white/80 dark:bg-slate-800/80 backdrop-blur-md border border-gray-200 dark:border-slate-700 rounded-full shadow-lg shadow-gray-200/50 dark:shadow-black/20 hover:shadow-xl transition-all duration-200 group"
               >
                 <div className="w-7 h-7 bg-gradient-to-br from-blue-600 to-purple-600 rounded-lg flex items-center justify-center shadow-md group-hover:scale-110 transition-transform">
@@ -262,6 +276,7 @@ function AppContent() {
             <div className="flex justify-center">
               <Link
                 to="/"
+                onClick={handleLogoClick}
                 className="flex items-center gap-2 px-4 py-2.5 bg-white/80 dark:bg-slate-800/80 backdrop-blur-md border border-gray-200 dark:border-slate-700 rounded-full shadow-lg shadow-gray-200/50 dark:shadow-black/20 hover:shadow-xl transition-all duration-200 group"
               >
                 <div className="w-7 h-7 bg-gradient-to-br from-blue-600 to-purple-600 rounded-lg flex items-center justify-center shadow-md group-hover:scale-110 transition-transform">
@@ -416,7 +431,7 @@ function AppContent() {
             </button>
 
             {/* Logo - Centro */}
-            <Link to="/" className="absolute left-1/2 -translate-x-1/2 flex items-center gap-2">
+            <Link to="/" onClick={handleLogoClick} className="absolute left-1/2 -translate-x-1/2 flex items-center gap-2">
               <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
                 <svg 
                   viewBox="0 0 24 24" 
@@ -467,33 +482,79 @@ function AppContent() {
             </div>
           </div>
 
-          {/* Mobile Menu Dropdown - Filtri */}
+          {/* Mobile Menu Dropdown - Filtri Completi */}
           {isHome && isMobileMenuOpen && (
-            <div className="border-t border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 animate-in slide-in-from-top-2 duration-200">
-              <div className="p-4 space-y-2">
-                <div className="text-xs font-semibold text-slate-500 dark:text-slate-400 mb-3">FILTRI</div>
-                {[
-                  { id: 'all', icon: LayoutGrid, label: 'Tutti i Task' },
-                  { id: 'todo', icon: Circle, label: 'Da Fare' },
-                  { id: 'in-progress', icon: Clock, label: 'In Corso' },
-                  { id: 'completed', icon: CheckCircle2, label: 'Completati' }
-                ].map(({ id, icon: Icon, label }) => (
-                  <button
-                    key={id}
-                    onClick={() => {
-                      setFilter(id);
-                      setIsMobileMenuOpen(false);
-                    }}
-                    className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${
-                      filter === id 
-                        ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900' 
-                        : 'text-slate-600 dark:text-slate-300 hover:bg-gray-100 dark:hover:bg-slate-800'
-                    }`}
+            <div className="border-t border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 animate-in slide-in-from-top-2 duration-200 max-h-[70vh] overflow-y-auto">
+              <div className="p-4 space-y-6">
+                
+                {/* Filtri Stato */}
+                <div>
+                  <div className="text-xs font-semibold text-slate-500 dark:text-slate-400 mb-3">STATO</div>
+                  <div className="space-y-2">
+                    {[
+                      { id: 'all', icon: LayoutGrid, label: 'Tutti i Task' },
+                      { id: 'todo', icon: Circle, label: 'Da Fare' },
+                      { id: 'in-progress', icon: Clock, label: 'In Corso' },
+                      { id: 'completed', icon: CheckCircle2, label: 'Completati' }
+                    ].map(({ id, icon: Icon, label }) => (
+                      <button
+                        key={id}
+                        onClick={() => setFilter(id)}
+                        className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${
+                          filter === id 
+                            ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900' 
+                            : 'text-slate-600 dark:text-slate-300 hover:bg-gray-100 dark:hover:bg-slate-800'
+                        }`}
+                      >
+                        <Icon size={20} strokeWidth={2.5} />
+                        <span className="font-medium">{label}</span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Select Difficoltà */}
+                <div>
+                  <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-2">
+                    DIFFICOLTÀ
+                  </label>
+                  <select
+                    value={difficultyFilter}
+                    onChange={(e) => setDifficultyFilter(e.target.value)}
+                    className="w-full px-4 py-3 rounded-lg bg-gray-50 dark:bg-slate-900 border border-gray-200 dark:border-slate-700 text-sm font-medium text-slate-700 dark:text-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   >
-                    <Icon size={20} strokeWidth={2.5} />
-                    <span className="font-medium">{label}</span>
-                  </button>
-                ))}
+                    <option value="all">Tutte le difficoltà</option>
+                    <option value="low">🟢 Bassa</option>
+                    <option value="medium">🟡 Media</option>
+                    <option value="high">🔴 Alta</option>
+                  </select>
+                </div>
+
+                {/* Select Tempistiche */}
+                <div>
+                  <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-2">
+                    TEMPISTICHE
+                  </label>
+                  <select
+                    value={dateFilter}
+                    onChange={(e) => setDateFilter(e.target.value)}
+                    className="w-full px-4 py-3 rounded-lg bg-gray-50 dark:bg-slate-900 border border-gray-200 dark:border-slate-700 text-sm font-medium text-slate-700 dark:text-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  >
+                    <option value="all">Tutte le tempistiche</option>
+                    <option value="overdue">⚠️ Scadute</option>
+                    <option value="upcoming">⏰ In Scadenza (7gg)</option>
+                    <option value="not-started">📅 Da Iniziare</option>
+                  </select>
+                </div>
+
+                {/* Pulsante Chiudi */}
+                <button
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="w-full px-4 py-3 rounded-lg bg-blue-600 text-white font-semibold hover:bg-blue-700 transition-colors"
+                >
+                  Applica Filtri
+                </button>
+
               </div>
             </div>
           )}
@@ -591,6 +652,8 @@ function AppContent() {
 function App() {
   const [isDark, setIsDark] = useState(false);
   const [filter, setFilter] = useState<string>('all');
+  const [difficultyFilter, setDifficultyFilter] = useState<string>('all');
+  const [dateFilter, setDateFilter] = useState<string>('all');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [user, setUser] = useState<User | null>(null);
 
@@ -614,7 +677,14 @@ function App() {
   }, []);
 
   return (
-    <AppContext.Provider value={{ isDark, setIsDark, filter, setFilter, isModalOpen, setIsModalOpen, user, setUser }}>
+    <AppContext.Provider value={{ 
+      isDark, setIsDark, 
+      filter, setFilter, 
+      difficultyFilter, setDifficultyFilter,
+      dateFilter, setDateFilter,
+      isModalOpen, setIsModalOpen, 
+      user, setUser 
+    }}>
       <BrowserRouter>
         <AppContent />
       </BrowserRouter>

@@ -1,4 +1,4 @@
-import { Clock } from 'lucide-react';
+import { Clock, Calendar, AlertTriangle } from 'lucide-react';
 import type { Task } from '../types';
 
 interface TaskCardProps {
@@ -14,6 +14,35 @@ function TaskCard({ task, onEdit }: TaskCardProps) {
       case 'in-progress': return 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400';
       default: return 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300';
     }
+  };
+
+  const getDifficultyColor = (difficulty?: string) => {
+    switch (difficulty) {
+      case 'low': return 'text-green-600 dark:text-green-400';
+      case 'medium': return 'text-yellow-600 dark:text-yellow-400';
+      case 'high': return 'text-red-600 dark:text-red-400';
+      default: return 'text-slate-400';
+    }
+  };
+
+  const getDifficultyLabel = (difficulty?: string) => {
+    switch (difficulty) {
+      case 'low': return 'Bassa';
+      case 'medium': return 'Media';
+      case 'high': return 'Alta';
+      default: return '';
+    }
+  };
+
+  const formatDate = (dateString?: string) => {
+    if (!dateString) return null;
+    const date = new Date(dateString);
+    return date.toLocaleDateString('it-IT', { day: 'numeric', month: 'short' });
+  };
+
+  const isOverdue = () => {
+    if (!task.dueDate || task.status === 'completed') return false;
+    return new Date(task.dueDate) < new Date();
   };
 
   return (
@@ -37,6 +66,43 @@ function TaskCard({ task, onEdit }: TaskCardProps) {
       <p className="text-sm text-slate-500 dark:text-slate-400 line-clamp-3 mb-4">
         {task.description}
       </p>
+
+      {/* Date e Difficoltà */}
+      <div className="space-y-2 mb-4">
+        {(task.startDate || task.dueDate) && (
+          <div className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
+            <Calendar size={12} />
+            {task.startDate && <span>{formatDate(task.startDate)}</span>}
+            {task.startDate && task.dueDate && <span>→</span>}
+            {task.dueDate && (
+              <span className={isOverdue() ? 'text-red-600 dark:text-red-400 font-semibold flex items-center gap-1' : ''}>
+                {isOverdue() && <AlertTriangle size={12} />}
+                {formatDate(task.dueDate)}
+              </span>
+            )}
+          </div>
+        )}
+
+        {task.difficulty && (
+          <div className={`flex items-center gap-1.5 text-xs font-semibold ${getDifficultyColor(task.difficulty)}`}>
+            <div className="flex gap-0.5">
+              {[1, 2, 3].map((level) => (
+                <div 
+                  key={level}
+                  className={`w-1 h-3 rounded-full ${
+                    (task.difficulty === 'low' && level === 1) ||
+                    (task.difficulty === 'medium' && level <= 2) ||
+                    (task.difficulty === 'high' && level <= 3)
+                      ? 'bg-current'
+                      : 'bg-slate-200 dark:bg-slate-700'
+                  }`}
+                />
+              ))}
+            </div>
+            <span>{getDifficultyLabel(task.difficulty)}</span>
+          </div>
+        )}
+      </div>
       
       <div className="pt-4 border-t border-gray-100 dark:border-slate-700/50 flex items-center text-xs text-slate-400">
         <Clock size={12} className="mr-1.5" />

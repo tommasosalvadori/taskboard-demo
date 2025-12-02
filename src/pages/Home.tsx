@@ -3,13 +3,14 @@ import { LayoutGrid } from 'lucide-react';
 import { useAppContext } from '../App';
 import TaskCard from '../components/TaskCard';
 import TaskModal from '../components/TaskModal';
+import FilterPanel from '../components/FilterPanel';
 import Footer from '../components/Footer';
 import type { Task } from '../types';
 
 function Home() {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [editingTask, setEditingTask] = useState<Task | null>(null);
-  const { filter, isModalOpen, setIsModalOpen } = useAppContext();
+  const { filter, difficultyFilter, dateFilter, setDifficultyFilter, setDateFilter, isModalOpen, setIsModalOpen } = useAppContext();
 
   // Carica i task iniziali
   useEffect(() => {
@@ -19,10 +20,40 @@ function Home() {
       .catch(err => console.error("Errore API:", err));
   }, []);
 
-  // Filtra i task
+  // Filtra i task con logica multipla
   const filteredTasks = tasks.filter(task => {
-    if (filter === 'all') return true;
-    return task.status === filter;
+    // Filtro stato
+    if (filter !== 'all' && task.status !== filter) return false;
+
+    // Filtro difficoltà
+    if (difficultyFilter !== 'all' && task.difficulty !== difficultyFilter) return false;
+
+    // Filtro date
+    if (dateFilter !== 'all') {
+      const now = new Date();
+      const dueDate = task.dueDate ? new Date(task.dueDate) : null;
+      const startDate = task.startDate ? new Date(task.startDate) : null;
+
+      switch (dateFilter) {
+        case 'overdue':
+          // Scadute: hanno dueDate passata e non sono completate
+          if (!dueDate || task.status === 'completed' || dueDate >= now) return false;
+          break;
+        case 'upcoming':
+          // In scadenza prossimi 7 giorni: hanno dueDate nei prossimi 7 giorni
+          if (!dueDate || task.status === 'completed') return false;
+          const weekFromNow = new Date();
+          weekFromNow.setDate(weekFromNow.getDate() + 7);
+          if (dueDate < now || dueDate > weekFromNow) return false;
+          break;
+        case 'not-started':
+          // Da iniziare: hanno startDate futura
+          if (!startDate || startDate <= now) return false;
+          break;
+      }
+    }
+
+    return true;
   });
 
   // Crea nuovo task
@@ -115,6 +146,17 @@ function Home() {
 
       {/* Griglia Task */}
       <main className="max-w-4xl mx-auto flex-1 w-full px-4 sm:px-6 lg:px-8 mb-12">
+        
+        {/* Pannello Filtri Avanzati - Hidden on Mobile */}
+        <div className="hidden lg:block">
+          <FilterPanel 
+            difficultyFilter={difficultyFilter}
+            setDifficultyFilter={setDifficultyFilter}
+            dateFilter={dateFilter}
+            setDateFilter={setDateFilter}
+          />
+        </div>
+
         <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
           {filteredTasks.map(task => (
             <TaskCard
@@ -132,7 +174,7 @@ function Home() {
               <LayoutGrid size={48} strokeWidth={1} />
             </div>
             <p className="text-slate-500 dark:text-slate-400 text-lg">
-              Nessun task trovato.
+              Nessun task trovato con i filtri selezionati.
             </p>
           </div>
         )}

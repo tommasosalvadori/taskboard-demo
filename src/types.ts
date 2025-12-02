@@ -8,6 +8,9 @@ export interface Task {
   description: string;
   status: 'completed' | 'in-progress' | 'todo';
   createdAt: string;
+  startDate?: string;
+  dueDate?: string;
+  difficulty?: 'low' | 'medium' | 'high';
 }
 
 export interface User {

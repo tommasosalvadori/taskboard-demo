@@ -5,63 +5,70 @@
       "title": "Setup project",
       "description": "Initialize React project with Vite",
       "status": "completed",
-      "createdAt": "2025-12-01T10:00:00Z"
+      "createdAt": "2025-12-01T10:00:00Z",
+      "startDate": "2025-11-28",
+      "dueDate": "2025-12-01",
+      "difficulty": "low"
     },
     {
       "id": "2",
       "title": "Configure fake API",
       "description": "Setup json-server with tasks endpoint",
       "status": "in-progress",
-      "createdAt": "2025-12-02T09:00:00Z"
+      "createdAt": "2025-12-02T09:00:00Z",
+      "startDate": "2025-12-01",
+      "dueDate": "2025-12-05",
+      "difficulty": "medium"
     },
     {
       "id": "3",
       "title": "Build task board UI",
       "description": "Create React components for task management",
       "status": "todo",
-      "createdAt": "2025-12-02T09:30:00Z"
+      "createdAt": "2025-12-02T09:30:00Z",
+      "startDate": "2025-12-03",
+      "dueDate": "2025-12-10",
+      "difficulty": "high"
     },
     {
       "id": "1c24",
       "title": "test",
       "description": "test",
       "status": "completed",
-      "createdAt": "2025-12-02T13:55:59.462Z"
+      "createdAt": "2025-12-02T13:55:59.462Z",
+      "startDate": "2025-12-05",
+      "dueDate": "2025-12-12",
+      "difficulty": "high"
     },
     {
-      "id": "a291",
-      "title": "aaa",
-      "description": "aaa",
-      "status": "in-progress",
-      "createdAt": "2025-12-02T14:05:58.179Z"
-    },
-    {
-      "id": "5421",
-      "title": "c4f",
-      "description": "f4",
+      "id": "6c45",
+      "title": "56b5g",
+      "description": "5gbg",
       "status": "todo",
-      "createdAt": "2025-12-02T14:06:00.993Z"
+      "startDate": "2025-12-03",
+      "dueDate": "2025-12-06",
+      "difficulty": "low",
+      "createdAt": "2025-12-02T15:38:26.505Z"
     },
     {
-      "id": "4cc7",
-      "title": "cf4f4",
-      "description": "cgrg",
+      "id": "7706",
+      "title": "fvrg",
+      "description": "gv5g",
       "status": "todo",
-      "createdAt": "2025-12-02T14:06:03.694Z"
+      "startDate": "2025-12-11",
+      "dueDate": "2025-12-12",
+      "difficulty": "high",
+      "createdAt": "2025-12-02T15:38:37.772Z"
     },
     {
-      "id": "6922",
-      "title": "cr4f",
-      "description": "fc44",
-      "status": "completed",
-      "createdAt": "2025-12-02T14:06:09.650Z"
-    },
-    {
-      "id": "6dcb",
-      "title": "gtv",
-      "description": "vt4t",
+      "id": "4bb2",
+      "title": "yh64n",
+      "description": "y6n",
       "status": "todo",
-      "createdAt": "2025-12-02T14:06:13.292Z"
+      "startDate": "2025-12-06",
+      "dueDate": "2025-12-10",
+      "difficulty": "medium",
+      "createdAt": "2025-12-02T15:38:56.310Z"
     }
   ]
 }
