@@ -33,8 +33,8 @@ function TaskModal({ task, onClose, onSave }: TaskModalProps) {
     setIsSubmitting(true);
 
     const taskData = task
-      ? { title, description, status } // Update
-      : { title, description, status, createdAt: new Date().toISOString() }; // Create
+      ? { title, description, status }
+      : { title, description, status, createdAt: new Date().toISOString() };
 
     await onSave(taskData);
     setIsSubmitting(false);
@@ -57,9 +57,7 @@ function TaskModal({ task, onClose, onSave }: TaskModalProps) {
         
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
-              Titolo
-            </label>
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Titolo</label>
             <input 
               type="text" 
               value={title}
@@ -71,9 +69,7 @@ function TaskModal({ task, onClose, onSave }: TaskModalProps) {
           </div>
           
           <div>
-            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
-              Descrizione
-            </label>
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Descrizione</label>
             <textarea 
               value={description}
               onChange={(e) => setDescription(e.target.value)}
@@ -84,9 +80,7 @@ function TaskModal({ task, onClose, onSave }: TaskModalProps) {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
-              Stato
-            </label>
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Stato</label>
             <select
               value={status}
               onChange={(e) => setStatus(e.target.value as 'todo' | 'in-progress' | 'completed')}

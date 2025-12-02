@@ -26,7 +26,7 @@ function TaskCard({ task, onEdit, onDelete }: TaskCardProps) {
   return (
     <article 
       onClick={() => onEdit(task)}
-      className="group relative bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-2xl p-6 hover:shadow-xl hover:shadow-gray-200/50 dark:hover:shadow-black/20 hover:-translate-y-1 transition-all duration-300 cursor-pointer"
+      className="group bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-2xl p-6 hover:shadow-xl hover:shadow-gray-200/50 dark:hover:shadow-black/20 hover:-translate-y-1 transition-all duration-300 cursor-pointer"
     >
       <div className="flex justify-between items-start mb-4">
         <span className={`text-xs font-bold px-2.5 py-1 rounded-full uppercase tracking-wider ${getStatusColor(task.status)}`}>
@@ -38,7 +38,7 @@ function TaskCard({ task, onEdit, onDelete }: TaskCardProps) {
           </span>
           <button
             onClick={handleDelete}
-            className="opacity-0 group-hover:opacity-100 p-1.5 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 text-red-500 dark:text-red-400 transition-all"
+            className="opacity-0 group-hover:opacity-100 p-1.5 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 text-red-500 dark:text-red-400 hover:scale-110 transition-all duration-200"
             title="Elimina task"
           >
             <Trash2 size={14} />
