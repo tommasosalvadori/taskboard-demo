@@ -9,3 +9,10 @@ export interface Task {
   status: 'completed' | 'in-progress' | 'todo';
   createdAt: string;
 }
+
+export interface User {
+  id: string;
+  name: string;
+  email: string;
+  avatar?: string;
+}
