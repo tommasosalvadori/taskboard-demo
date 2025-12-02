@@ -1,0 +1,39 @@
+{
+  "tasks": [
+    {
+      "id": "1",
+      "title": "Setup project",
+      "description": "Initialize React project with Vite",
+      "status": "completed",
+      "createdAt": "2025-12-01T10:00:00Z"
+    },
+    {
+      "id": "2",
+      "title": "Configure fake API",
+      "description": "Setup json-server with tasks endpoint",
+      "status": "in-progress",
+      "createdAt": "2025-12-02T09:00:00Z"
+    },
+    {
+      "id": "3",
+      "title": "Build task board UI",
+      "description": "Create React components for task management",
+      "status": "todo",
+      "createdAt": "2025-12-02T09:30:00Z"
+    },
+    {
+      "id": "1764671191770",
+      "title": "Setup Application",
+      "description": "Test",
+      "status": "todo",
+      "createdAt": "2025-12-02T10:26:31.770Z"
+    },
+    {
+      "id": "1764671210949",
+      "title": "Test",
+      "description": "test",
+      "status": "todo",
+      "createdAt": "2025-12-02T10:26:50.949Z"
+    }
+  ]
+}
