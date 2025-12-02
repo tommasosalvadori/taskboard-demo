@@ -1,14 +1,15 @@
 import { useState, useEffect } from 'react';
-import { X } from 'lucide-react';
+import { X, Trash2 } from 'lucide-react';
 import type { Task } from '../types';
 
 interface TaskModalProps {
   task: Task | null;
   onClose: () => void;
   onSave: (taskData: Omit<Task, 'id'> | Partial<Task>) => void;
+  onDelete?: (taskId: string) => void;
 }
 
-function TaskModal({ task, onClose, onSave }: TaskModalProps) {
+function TaskModal({ task, onClose, onSave, onDelete }: TaskModalProps) {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [status, setStatus] = useState<'todo' | 'in-progress' | 'completed'>('todo');
@@ -38,6 +39,13 @@ function TaskModal({ task, onClose, onSave }: TaskModalProps) {
 
     await onSave(taskData);
     setIsSubmitting(false);
+  };
+
+  const handleDelete = () => {
+    if (task && onDelete && confirm('Sei sicuro di voler eliminare questa task?')) {
+      onDelete(task.id);
+      onClose();
+    }
   };
 
   return (
@@ -92,21 +100,37 @@ function TaskModal({ task, onClose, onSave }: TaskModalProps) {
             </select>
           </div>
 
-          <div className="pt-2 flex justify-end gap-3">
-            <button 
-              type="button"
-              onClick={onClose}
-              className="px-5 py-2.5 rounded-xl font-medium text-slate-600 hover:bg-gray-100 dark:text-slate-300 dark:hover:bg-slate-700 transition-colors"
-            >
-              Annulla
-            </button>
-            <button 
-              type="submit"
-              disabled={!title.trim() || isSubmitting}
-              className="px-5 py-2.5 rounded-xl font-medium bg-slate-900 dark:bg-white text-white dark:text-slate-900 hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg shadow-slate-200 dark:shadow-none"
-            >
-              {isSubmitting ? 'Salvataggio...' : task ? 'Aggiorna' : 'Crea Task'}
-            </button>
+          <div className="pt-2 flex justify-between items-center gap-3">
+            {/* Pulsante Elimina - Solo in modalità modifica */}
+            {task && onDelete ? (
+              <button 
+                type="button"
+                onClick={handleDelete}
+                className="px-4 py-2.5 rounded-xl font-medium text-red-600 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-900/20 transition-colors flex items-center gap-2"
+              >
+                <Trash2 size={18} />
+                <span>Elimina</span>
+              </button>
+            ) : (
+              <div></div>
+            )}
+
+            <div className="flex gap-3">
+              <button 
+                type="button"
+                onClick={onClose}
+                className="px-5 py-2.5 rounded-xl font-medium text-slate-600 hover:bg-gray-100 dark:text-slate-300 dark:hover:bg-slate-700 transition-colors"
+              >
+                Annulla
+              </button>
+              <button 
+                type="submit"
+                disabled={!title.trim() || isSubmitting}
+                className="px-5 py-2.5 rounded-xl font-medium bg-slate-900 dark:bg-white text-white dark:text-slate-900 hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg shadow-slate-200 dark:shadow-none"
+              >
+                {isSubmitting ? 'Salvataggio...' : task ? 'Aggiorna' : 'Crea Task'}
+              </button>
+            </div>
           </div>
         </form>
       </div>

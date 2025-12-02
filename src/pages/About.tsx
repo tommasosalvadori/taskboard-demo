@@ -1,9 +1,10 @@
 import { CheckCircle2, Code2, Rocket, Zap } from 'lucide-react';
+import Footer from '../components/Footer';
 
 function About() {
   return (
-    <div className="min-h-screen relative pb-20 pt-32 px-4 sm:px-6 lg:px-8 font-sans transition-colors duration-300">
-      <main className="max-w-3xl mx-auto">
+    <div className="min-h-screen flex flex-col relative pb-[6.75rem] lg:pb-0 pt-20 lg:pt-36 xl:pt-32 font-sans transition-colors duration-300">
+      <main className="max-w-3xl mx-auto flex-1 w-full px-4 sm:px-6 lg:px-8 mb-12">
         
         <div className="text-center mb-16">
           <div className="inline-flex p-4 rounded-full bg-blue-100 dark:bg-blue-900/30 mb-6">
@@ -64,6 +65,9 @@ function About() {
         </div>
 
       </main>
+
+      {/* Footer */}
+      <Footer />
     </div>
   );
 }

@@ -3,6 +3,7 @@ import { LayoutGrid } from 'lucide-react';
 import { useAppContext } from '../App';
 import TaskCard from '../components/TaskCard';
 import TaskModal from '../components/TaskModal';
+import Footer from '../components/Footer';
 import type { Task } from '../types';
 
 function Home() {
@@ -100,7 +101,7 @@ function Home() {
   };
 
   return (
-    <div className="min-h-screen relative pb-20 pt-32 px-4 sm:px-6 lg:px-8 font-sans transition-colors duration-300">
+    <div className="min-h-screen flex flex-col relative pb-[6.75rem] lg:pb-0 pt-20 lg:pt-36 xl:pt-32 font-sans transition-colors duration-300">
       
       {/* Modal Creazione/Modifica Task */}
       {isModalOpen && (
@@ -108,12 +109,13 @@ function Home() {
           task={editingTask}
           onClose={handleCloseModal}
           onSave={handleSaveTask}
+          onDelete={handleDeleteTask}
         />
       )}
 
       {/* Griglia Task */}
-      <main className="max-w-4xl mx-auto">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <main className="max-w-4xl mx-auto flex-1 w-full px-4 sm:px-6 lg:px-8 mb-12">
+        <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
           {filteredTasks.map(task => (
             <TaskCard
               key={task.id}
@@ -135,6 +137,9 @@ function Home() {
           </div>
         )}
       </main>
+
+      {/* Footer */}
+      <Footer />
     </div>
   );
 }
