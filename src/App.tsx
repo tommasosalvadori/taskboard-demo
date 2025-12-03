@@ -1,4 +1,5 @@
 import { useState, useEffect, createContext, useContext } from 'react';
+import type { Task } from './types';
 import { BrowserRouter, Routes, Route, useLocation, Link } from 'react-router-dom';
 import { 
   CheckCircle2, 
@@ -14,7 +15,8 @@ import {
   LogOut,
   Menu,
   X,
-  Calendar
+  Calendar,
+  BarChart3
 } from 'lucide-react';
 import Home from './pages/Home';
 import About from './pages/About';
@@ -36,6 +38,8 @@ interface AppContextType {
   setUser: (user: User | null) => void;
   isCalendarView: boolean;
   setIsCalendarView: (value: boolean) => void;
+  isReportView: boolean;
+  setIsReportView: (value: boolean) => void;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -48,9 +52,18 @@ export const useAppContext = () => {
 
 function AppContent() {
   const location = useLocation();
-  const { isDark, setIsDark, filter, setFilter, difficultyFilter, setDifficultyFilter, dateFilter, setDateFilter, setIsModalOpen, user, setUser, isCalendarView, setIsCalendarView } = useAppContext();
+  const { isDark, setIsDark, filter, setFilter, difficultyFilter, setDifficultyFilter, dateFilter, setDateFilter, setIsModalOpen, user, setUser, isCalendarView, setIsCalendarView, isReportView, setIsReportView } = useAppContext();
+  const [tasks, setTasks] = useState<Task[]>([]);
   const isHome = location.pathname === '/';
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  // Carica i task per passarli al report
+  useEffect(() => {
+    fetch('http://localhost:3000/tasks')
+      .then(res => res.json())
+      .then(data => setTasks(data))
+      .catch(err => console.error("Errore API:", err));
+  }, []);
 
   // Scroll to top quando cambia la pagina
   useEffect(() => {
@@ -83,6 +96,9 @@ function AppContent() {
     setFilter('all');
     setDifficultyFilter('all');
     setDateFilter('all');
+    // Reset viste alternative
+    setIsCalendarView(false);
+    setIsReportView(false);
     // Scroll to top
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -125,9 +141,9 @@ function AppContent() {
             
             {/* LOGO - Sinistra (Solo su schermi XL+) */}
             <div className="absolute left-8 hidden xl:block">
-              <Link
-                to="/"
-                className="flex items-center gap-2 px-4 py-2.5 bg-white/80 dark:bg-slate-800/80 backdrop-blur-md border border-gray-200 dark:border-slate-700 rounded-full shadow-lg shadow-gray-200/50 dark:shadow-black/20 hover:shadow-xl transition-all duration-200 group"
+              <button
+                onClick={handleLogoClick}
+                className="flex items-center gap-2 px-4 py-2.5 bg-white/80 dark:bg-slate-800/80 backdrop-blur-md border border-gray-200 dark:border-slate-700 rounded-full shadow-lg shadow-gray-200/50 dark:shadow-black/20 hover:shadow-xl transition-all duration-200 group cursor-pointer"
               >
                 <div className="w-7 h-7 bg-gradient-to-br from-blue-600 to-purple-600 rounded-lg flex items-center justify-center shadow-md group-hover:scale-110 transition-transform">
                   <svg 
@@ -144,7 +160,7 @@ function AppContent() {
                 <span className="text-lg font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
                   TaskBoard
                 </span>
-              </Link>
+              </button>
             </div>
 
             {/* HEADER CENTRALE */}
@@ -162,10 +178,11 @@ function AppContent() {
                     onClick={() => {
                       setFilter(id);
                       setIsCalendarView(false);
+                      setIsReportView(false);
                     }}
                     title={label}
                     className={`p-2.5 rounded-full transition-all duration-200 ${
-                      filter === id && !isCalendarView
+                      filter === id && !isCalendarView && !isReportView
                         ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-sm' 
                         : 'text-slate-500 hover:bg-gray-100 dark:text-slate-400 dark:hover:bg-slate-700'
                     }`}
@@ -177,7 +194,10 @@ function AppContent() {
                 <div className="w-px h-6 bg-gray-200 dark:bg-slate-700 mx-1"></div>
 
                 <button
-                  onClick={() => setIsCalendarView(!isCalendarView)}
+                  onClick={() => {
+                    setIsCalendarView(!isCalendarView);
+                    setIsReportView(false);
+                  }}
                   title="Calendario"
                   className={`p-2.5 rounded-full transition-all duration-200 ${
                     isCalendarView
@@ -186,6 +206,21 @@ function AppContent() {
                   }`}
                 >
                   <Calendar size={18} strokeWidth={2.5} />
+                </button>
+
+                <button
+                  onClick={() => {
+                    setIsReportView(!isReportView);
+                    setIsCalendarView(false);
+                  }}
+                  title="Report Mensile"
+                  className={`p-2.5 rounded-full transition-all duration-200 ${
+                    isReportView
+                      ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-sm'
+                      : 'text-slate-500 hover:bg-gray-100 dark:text-slate-400 dark:hover:bg-slate-700'
+                  }`}
+                >
+                  <BarChart3 size={18} strokeWidth={2.5} />
                 </button>
 
                 <div className="w-px h-6 bg-gray-200 dark:bg-slate-700 mx-1"></div>
@@ -324,9 +359,9 @@ function AppContent() {
             
             {/* LOGO - Sinistra (Solo su schermi XL+) */}
             <div className="absolute left-8 hidden xl:block">
-              <Link
-                to="/"
-                className="flex items-center gap-2 px-4 py-2.5 bg-white/80 dark:bg-slate-800/80 backdrop-blur-md border border-gray-200 dark:border-slate-700 rounded-full shadow-lg shadow-gray-200/50 dark:shadow-black/20 hover:shadow-xl transition-all duration-200 group"
+              <button
+                onClick={handleLogoClick}
+                className="flex items-center gap-2 px-4 py-2.5 bg-white/80 dark:bg-slate-800/80 backdrop-blur-md border border-gray-200 dark:border-slate-700 rounded-full shadow-lg shadow-gray-200/50 dark:shadow-black/20 hover:shadow-xl transition-all duration-200 group cursor-pointer"
               >
                 <div className="w-7 h-7 bg-gradient-to-br from-blue-600 to-purple-600 rounded-lg flex items-center justify-center shadow-md group-hover:scale-110 transition-transform">
                   <svg 
@@ -343,7 +378,7 @@ function AppContent() {
                 <span className="text-lg font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
                   TaskBoard
                 </span>
-              </Link>
+              </button>
             </div>
 
             <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -451,7 +486,7 @@ function AppContent() {
             </button>
 
             {/* Logo - Centro */}
-            <Link to="/" onClick={handleLogoClick} className="absolute left-1/2 -translate-x-1/2 flex items-center gap-2">
+            <button onClick={handleLogoClick} className="absolute left-1/2 -translate-x-1/2 flex items-center gap-2 cursor-pointer">
               <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
                 <svg 
                   viewBox="0 0 24 24" 
@@ -467,7 +502,7 @@ function AppContent() {
               <span className="font-bold text-lg bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
                 TaskBoard
               </span>
-            </Link>
+            </button>
 
             {/* Right Actions */}
             <div className="flex items-center gap-2">
@@ -507,13 +542,14 @@ function AppContent() {
             <div className="border-t border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 animate-in slide-in-from-top-2 duration-200 max-h-[70vh] overflow-y-auto">
               <div className="p-4 space-y-6">
                 
-                {/* Vista Calendario */}
+                {/* Vista */}
                 <div>
                   <div className="text-xs font-semibold text-slate-500 dark:text-slate-400 mb-3">VISTA</div>
                   <div className="space-y-2">
                     <button
                       onClick={() => {
                         setIsCalendarView(!isCalendarView);
+                        setIsReportView(false);
                         setIsMobileMenuOpen(false);
                       }}
                       className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${
@@ -524,6 +560,18 @@ function AppContent() {
                     >
                       <Calendar size={20} strokeWidth={2.5} />
                       <span className="font-medium">Calendario</span>
+                    </button>
+                    
+                    <button
+                      onClick={() => {
+                        setIsReportView(!isReportView);
+                        setIsCalendarView(false);
+                        setIsMobileMenuOpen(false);
+                      }}
+                      className="w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all text-slate-600 dark:text-slate-300 hover:bg-gray-100 dark:hover:bg-slate-800"
+                    >
+                      <BarChart3 size={20} strokeWidth={2.5} />
+                      <span className="font-medium">Report Mensile</span>
                     </button>
                   </div>
                 </div>
@@ -546,9 +594,10 @@ function AppContent() {
                         onClick={() => {
                           setFilter(id);
                           setIsCalendarView(false);
+                          setIsReportView(false);
                         }}
                         className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${
-                          filter === id && !isCalendarView
+                          filter === id && !isCalendarView && !isReportView
                             ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900' 
                             : 'text-slate-600 dark:text-slate-300 hover:bg-gray-100 dark:hover:bg-slate-800'
                         }`}
@@ -637,7 +686,7 @@ function AppContent() {
               )}
             </Link>
 
-            {/* Pulsante Nuovo - Centro - Solo su Home */}
+            {/* Pulsante Nuovo - Solo su Home */}
             {isHome && (
               <button
                 onClick={() => setIsModalOpen(true)}
@@ -652,7 +701,7 @@ function AppContent() {
               </button>
             )}
 
-            {/* Spacer invisibile quando non c'è il pulsante Nuovo */}
+            {/* Spacer invisibile quando non sei su Home */}
             {!isHome && (
               <div className="flex-1"></div>
             )}
@@ -704,6 +753,7 @@ function App() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [user, setUser] = useState<User | null>(null);
   const [isCalendarView, setIsCalendarView] = useState(false);
+  const [isReportView, setIsReportView] = useState(false);
 
   // Gestione Dark Mode
   useEffect(() => {
@@ -732,7 +782,8 @@ function App() {
       dateFilter, setDateFilter,
       isModalOpen, setIsModalOpen, 
       user, setUser,
-      isCalendarView, setIsCalendarView
+      isCalendarView, setIsCalendarView,
+      isReportView, setIsReportView
     }}>
       <BrowserRouter>
         <AppContent />

@@ -7,13 +7,14 @@ import FilterPanel from '../components/FilterPanel';
 import StatsPanel from '../components/StatsPanel';
 import Footer from '../components/Footer';
 import CalendarBlock from '../components/CalendarBlock';
+import ReportBlock from '../components/ReportBlock';
 import type { Task } from '../types';
 import { formatDateToInput } from '../utils/dateUtils';
 
 function Home() {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [editingTask, setEditingTask] = useState<Task | null>(null);
-  const { filter, setFilter, difficultyFilter, dateFilter, setDifficultyFilter, setDateFilter, isModalOpen, setIsModalOpen, isCalendarView, setIsCalendarView } = useAppContext();
+  const { filter, setFilter, difficultyFilter, dateFilter, setDifficultyFilter, setDateFilter, isModalOpen, setIsModalOpen, isCalendarView, setIsCalendarView, isReportView } = useAppContext();
 
   // Carica i task iniziali
   useEffect(() => {
@@ -207,14 +208,16 @@ function Home() {
         />
       )}
 
-      {/* Stats Panel - Sidebar Desktop + Barra Mobile */}
+      {/* Stats Panel - Sidebar Sinistra */}
       <StatsPanel tasks={tasks} onStatClick={handleStatClick} />
 
       {/* Contenuto Principale */}
       <main className="max-w-4xl mx-auto flex-1 w-full px-4 sm:px-6 lg:px-8 mb-12">
         
-        {/* Vista Calendario */}
-        {isCalendarView ? (
+        {/* Vista Report */}
+        {isReportView ? (
+          <ReportBlock tasks={tasks} />
+        ) : isCalendarView ? (
           <CalendarBlock tasks={tasks} onDayClick={handleDayClick} />
         ) : (
           <>

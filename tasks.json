@@ -129,6 +129,16 @@
       "dueDate": "2025-12-16",
       "difficulty": "medium",
       "createdAt": "2025-12-03T08:43:37.402Z"
+    },
+    {
+      "id": "7cdc",
+      "title": "7ju",
+      "description": "j7n7jn",
+      "status": "todo",
+      "startDate": "2025-11-29",
+      "dueDate": "2025-12-02",
+      "difficulty": "medium",
+      "createdAt": "2025-12-03T09:50:10.560Z"
     }
   ]
 }

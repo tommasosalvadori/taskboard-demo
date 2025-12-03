@@ -47,6 +47,15 @@ function CalendarBlock({ tasks, onDayClick }: CalendarBlockProps) {
     setCurrentDate(new Date());
   };
 
+  // Selettore manuale mese/anno
+  const handleMonthChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setCurrentDate(new Date(year, parseInt(e.target.value), 1));
+  };
+
+  const handleYearChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setCurrentDate(new Date(parseInt(e.target.value), month, 1));
+  };
+
   // Filtra task per un giorno specifico
   const getTasksForDay = (date: Date) => {
     const dateString = formatDateToInput(date);
@@ -75,34 +84,60 @@ function CalendarBlock({ tasks, onDayClick }: CalendarBlockProps) {
       <div className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-md border border-gray-200 dark:border-slate-700 rounded-2xl shadow-lg p-4 sm:p-6">
         
         {/* Header Calendario */}
-        <div className="flex items-center justify-between mb-6">
-          <button
-            onClick={goToPreviousMonth}
-            className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-slate-700 transition-colors"
-            title="Mese precedente"
-          >
-            <ChevronLeft size={20} className="text-slate-600 dark:text-slate-300" />
-          </button>
-
-          <div className="text-center">
-            <h2 className="text-xl sm:text-2xl font-bold text-slate-800 dark:text-slate-200">
-              {monthNames[month]} {year}
-            </h2>
+        <div className="space-y-4 mb-6">
+          {/* Navigazione principale */}
+          <div className="flex items-center justify-between">
             <button
-              onClick={goToToday}
-              className="text-xs sm:text-sm text-blue-600 dark:text-blue-400 hover:underline mt-1"
+              onClick={goToPreviousMonth}
+              className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-slate-700 transition-colors"
+              title="Mese precedente"
             >
-              Vai a oggi
+              <ChevronLeft size={20} className="text-slate-600 dark:text-slate-300" />
+            </button>
+
+            <div className="text-center">
+              <h2 className="text-xl sm:text-2xl font-bold text-slate-800 dark:text-slate-200">
+                {monthNames[month]} {year}
+              </h2>
+              <button
+                onClick={goToToday}
+                className="text-xs sm:text-sm text-blue-600 dark:text-blue-400 hover:underline mt-1"
+              >
+                Vai a oggi
+              </button>
+            </div>
+
+            <button
+              onClick={goToNextMonth}
+              className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-slate-700 transition-colors"
+              title="Mese successivo"
+            >
+              <ChevronRight size={20} className="text-slate-600 dark:text-slate-300" />
             </button>
           </div>
 
-          <button
-            onClick={goToNextMonth}
-            className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-slate-700 transition-colors"
-            title="Mese successivo"
-          >
-            <ChevronRight size={20} className="text-slate-600 dark:text-slate-300" />
-          </button>
+          {/* Selettori Mese e Anno */}
+          <div className="flex gap-3 justify-center">
+            <select
+              value={month}
+              onChange={handleMonthChange}
+              className="px-4 py-2 rounded-lg bg-gray-50 dark:bg-slate-900 border border-gray-200 dark:border-slate-700 text-sm font-medium text-slate-700 dark:text-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent cursor-pointer"
+            >
+              {monthNames.map((name, idx) => (
+                <option key={idx} value={idx}>{name}</option>
+              ))}
+            </select>
+
+            <select
+              value={year}
+              onChange={handleYearChange}
+              className="px-4 py-2 rounded-lg bg-gray-50 dark:bg-slate-900 border border-gray-200 dark:border-slate-700 text-sm font-medium text-slate-700 dark:text-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent cursor-pointer"
+            >
+              {Array.from({ length: 10 }, (_, i) => new Date().getFullYear() - 5 + i).map(y => (
+                <option key={y} value={y}>{y}</option>
+              ))}
+            </select>
+          </div>
         </div>
 
         {/* Griglia Calendario */}
