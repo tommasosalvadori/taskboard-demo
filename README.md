@@ -1,978 +1,272 @@
-# 📋 Task Board Demo
+# 📋 TaskBoard
 
-Un'applicazione moderna di gestione task costruita con React, TypeScript e Tailwind CSS, con una fake REST API powered by JSON Server.
+Una moderna applicazione di gestione task con autenticazione, filtri avanzati e visualizzazioni multiple. Costruita con React, TypeScript e Tailwind CSS.
 
-## 📖 Descrizione Progetto
+![React](https://img.shields.io/badge/React-19.2.0-61dafb?style=flat-square&logo=react)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.9.3-3178c6?style=flat-square&logo=typescript)
+![Vite](https://img.shields.io/badge/Vite-7.2.4-646cff?style=flat-square&logo=vite)
+![TailwindCSS](https://img.shields.io/badge/Tailwind-3.4.18-38bdf8?style=flat-square&logo=tailwindcss)
 
-Task Board Demo è una Single Page Application (SPA) che permette di gestire task in modo efficiente e intuitivo. L'applicazione offre un'interfaccia minimal e pulita con supporto completo per dark mode, filtri dinamici e operazioni CRUD complete sui task.
+## ✨ Funzionalità
 
-### Caratteristiche Principali
+### 🔐 Sistema di Autenticazione
+- **Registrazione** con validazione password robusta
+  - Minimo 8 caratteri
+  - Almeno una maiuscola, una minuscola, un numero e un carattere speciale
+  - Feedback visivo in tempo reale
+- **Login/Logout** con gestione token
+- **Route protette** con redirect automatico
+- **Persistenza sessione** - mantiene l'autenticazione anche dopo refresh
 
-- ✨ **UI Moderna**: Design minimal con Tailwind CSS
-- 🌙 **Dark Mode**: Supporto completo tema chiaro/scuro
-- 🔄 **Real-time Updates**: Aggiornamenti istantanei tramite API REST
-- 🎯 **Filtri Dinamici**: Filtra task per stato (todo, in-progress, completed)
-- 📱 **Responsive**: Ottimizzata per desktop, tablet e mobile
-- 🚀 **Fast**: Powered by Vite per sviluppo velocissimo
+### 📝 Gestione Task
+- **Creazione, modifica ed eliminazione** task
+- **Stati multipli**: Da fare, In corso, Completati
+- **Livelli di difficoltà**: Bassa, Media, Alta
+- **Date personalizzabili**: Data inizio e scadenza
+- **Descrizioni dettagliate** per ogni task
 
-## 🛠️ Stack Tecnologico
+### 🎯 Filtri Avanzati
+- Filtro per **stato** (tutti, da fare, in corso, completati)
+- Filtro per **difficoltà** (tutte, bassa, media, alta)
+- Filtro per **tempistiche**:
+  - Scadute
+  - In scadenza (prossimi 7 giorni)
+  - Da iniziare
+- Filtro per **data specifica**
 
-- **Frontend Framework**: React 19
-- **Language**: TypeScript
-- **Build Tool**: Vite 7.2
-- **Styling**: Tailwind CSS 3.4
-- **Routing**: React Router 7.9
-- **Icons**: Lucide React
-- **Fake API**: JSON Server 1.0
+### 📊 Visualizzazioni
+- **Vista Griglia**: Layout responsive con card colorate
+- **Vista Calendario**: Visualizza task per data con navigazione mensile
+- **Vista Report**: Statistiche e grafici mensili
+  - Grafico a barre delle completate per giorno
+  - Metriche di produttività
+  - Analisi delle difficoltà
 
-## 📋 Requisiti
+### 🎨 Design e UX
+- **Dark Mode** con transizioni fluide
+- **Responsive** - ottimizzato per desktop, tablet e mobile
+- **Animazioni moderne** per migliorare l'esperienza utente
+- **Sidebar con statistiche** in tempo reale
+- **Interfaccia intuitiva** con icone Lucide React
 
-Prima di iniziare, assicurati di avere installato:
+## 🛠️ Tecnologie
 
-- **Node.js**: versione 18.x o superiore
-- **npm**: versione 9.x o superiore
-- **Git**: per clonare il repository
+- **[React](https://react.dev/)** 19.2.0 - Library UI
+- **[TypeScript](https://www.typescriptlang.org/)** 5.9.3 - Type safety
+- **[Vite](https://vite.dev/)** 7.2.4 - Build tool e dev server
+- **[React Router](https://reactrouter.com/)** 7.9.6 - Routing
+- **[Tailwind CSS](https://tailwindcss.com/)** 3.4.18 - Styling
+- **[Lucide React](https://lucide.dev/)** - Icone
+- **[Recharts](https://recharts.org/)** 3.5.1 - Grafici
+- **[JSON Server](https://github.com/typicode/json-server)** 1.0.0-beta.3 - Mock API
+
+## 📋 Prerequisiti
+
+- **Node.js** 18.x o superiore
+- **npm** 9.x o superiore
 
 ## 🚀 Installazione
 
-### 1. Clona il Repository
+1. **Clona il repository**
+   ```bash
+   git clone <repository-url>
+   cd taskboard-demo
+   ```
 
-```bash
-git clone https://github.com/tommasosalvadori/taskboard-demo.git
-cd taskboard-demo
-```
+2. **Installa le dipendenze**
+   ```bash
+   npm install
+   ```
 
-### 2. Installa le Dipendenze
+3. **Avvia il server JSON (API mock)**
+   ```bash
+   npm run api
+   ```
+   Il server API sarà disponibile su `http://localhost:3000`
 
-```bash
-npm install
-```
+4. **Avvia l'applicazione** (in un nuovo terminale)
+   ```bash
+   npm run dev
+   ```
+   L'applicazione sarà disponibile su `http://localhost:5173`
 
-Questo installerà tutte le dipendenze necessarie, incluse:
-- React e React DOM
-- React Router per il routing
-- Tailwind CSS per lo styling
-- JSON Server per la fake API
-- Lucide React per le icone
+## 📖 Come Usare
 
-## ▶️ Avvio Applicazione
+### Prima Volta
 
-L'applicazione richiede **due server** in esecuzione contemporaneamente:
+1. **Registrazione**
+   - Apri l'app nel browser
+   - Clicca su "Registrati"
+   - Compila il form con:
+     - Nome completo
+     - Email valida
+     - Password sicura (rispettando i requisiti)
+   - Verrai automaticamente loggato e reindirizzato alla dashboard
 
-### 1. Avvia la Fake API (JSON Server)
+2. **Esplora l'app**
+   - Crea il tuo primo task con il pulsante `+`
+   - Naviga tra le diverse visualizzazioni (Griglia, Calendario, Report)
+   - Applica filtri per organizzare i task
+   - Modifica o elimina task esistenti
 
-In un terminale, esegui:
+### Funzionalità Principali
 
-```bash
-npm run api
-```
+#### Gestione Task
+- **Nuovo Task**: Clicca il pulsante `+` nella barra superiore
+- **Modifica Task**: Clicca su un task esistente
+- **Elimina Task**: Apri il task e clicca sull'icona cestino
+- **Cambia Stato**: Usa i badge colorati per cambiare lo stato
 
-Questo avvierà JSON Server sulla porta **3000**:
-- 🔌 API Endpoint: `http://localhost:3000/tasks`
-- 📝 File dati: `tasks.json`
-- 🔄 Auto-reload al cambiamento del file
+#### Filtri
+- **Desktop**: Usa i pulsanti nella barra superiore e i filtri avanzati
+- **Mobile**: Apri il menu hamburger per accedere a tutti i filtri
 
-### 2. Avvia il Server di Sviluppo (Vite)
+#### Visualizzazioni
+- **Griglia**: Vista predefinita con tutti i task
+- **Calendario**: Clicca l'icona calendario per vedere i task organizzati per data
+- **Report**: Clicca l'icona grafico per vedere le statistiche
 
-In un **secondo terminale**, esegui:
+#### Dark Mode
+- Clicca l'icona sole/luna per alternare tra tema chiaro e scuro
 
-```bash
-npm run dev
-```
-
-Questo avvierà l'applicazione React sulla porta **5173** (o successiva se occupata):
-- 🌐 URL: `http://localhost:5173/`
-- ⚡ Hot Module Replacement abilitato
-
-### 3. Apri nel Browser
-
-Naviga su `http://localhost:5173/` per utilizzare l'applicazione.
-
-## 📜 Comandi Principali
-
-| Comando | Descrizione |
-|---------|-------------|
-| `npm install` | Installa tutte le dipendenze |
-| `npm run dev` | Avvia il server di sviluppo Vite |
-| `npm run api` | Avvia la fake API JSON Server |
-| `npm run build` | Crea build di produzione |
-| `npm run preview` | Preview della build di produzione |
-| `npm run lint` | Esegue ESLint per controllo codice |
-
-## 📁 Struttura Cartelle
+## 🗂️ Struttura del Progetto
 
 ```
 taskboard-demo/
-├── public/              # Asset statici
-│   └── vite.svg
 ├── src/
-│   ├── assets/          # Immagini e risorse
-│   │   └── react.svg
-│   ├── components/      # Componenti React riutilizzabili
-│   │   ├── TaskCard.tsx      # Card per visualizzare singolo task
-│   │   └── TaskModal.tsx     # Modal per create/edit task
-│   ├── pages/           # Pagine dell'applicazione
-│   │   ├── Home.tsx          # Pagina principale con task board
-│   │   └── About.tsx         # Pagina informativa
-│   ├── App.tsx          # Componente root con routing e context
-│   ├── main.tsx         # Entry point dell'applicazione
-│   ├── index.css        # Stili globali e direttive Tailwind
-│   └── App.css          # Stili specifici App (legacy)
-├── tasks.json           # Database fake per JSON Server
-├── tailwind.config.js   # Configurazione Tailwind CSS
-├── postcss.config.cjs   # Configurazione PostCSS
-├── vite.config.ts       # Configurazione Vite
-├── tsconfig.json        # Configurazione TypeScript
-├── package.json         # Dipendenze e scripts
-└── README.md            # Questo file
+│   ├── components/          # Componenti React riutilizzabili
+│   │   ├── CalendarBlock.tsx
+│   │   ├── FilterPanel.tsx
+│   │   ├── Footer.tsx
+│   │   ├── ProtectedRoute.tsx  # Protezione route
+│   │   ├── ReportBlock.tsx
+│   │   ├── StatsPanel.tsx
+│   │   ├── TaskCard.tsx
+│   │   └── TaskModal.tsx
+│   ├── pages/               # Pagine dell'applicazione
+│   │   ├── About.tsx
+│   │   ├── Home.tsx
+│   │   ├── Login.tsx        # Pagina login
+│   │   └── Register.tsx     # Pagina registrazione
+│   ├── utils/               # Utility functions
+│   │   ├── auth.ts          # Logica autenticazione
+│   │   └── dateUtils.ts
+│   ├── App.tsx              # Componente principale
+│   ├── types.ts             # Definizioni TypeScript
+│   ├── main.tsx             # Entry point
+│   └── index.css            # Stili globali
+├── public/                  # Asset statici
+├── tasks.json               # Database JSON (API mock)
+├── package.json
+├── tsconfig.json
+├── vite.config.ts
+└── tailwind.config.js
 ```
 
-## 🎯 Funzionalità Implementate
+## 🔐 Sistema di Autenticazione
 
-### Gestione Task
+L'applicazione utilizza un sistema di autenticazione finto basato su localStorage:
 
-- **Visualizzazione**: Griglia responsive con card
-- **Creazione**: Modal con form per nuove task (stato default: "todo")
-- **Modifica**: Click su una card per modificare titolo, descrizione e stato
-- **Filtri**: Visualizza task per stato (Tutti, Da fare, In corso, Completati)
+### Validazione Password
+Le password devono soddisfare i seguenti requisiti:
+- ✅ Minimo 8 caratteri
+- ✅ Almeno una lettera maiuscola (A-Z)
+- ✅ Almeno una lettera minuscola (a-z)
+- ✅ Almeno un numero (0-9)
+- ✅ Almeno un carattere speciale (!@#$%^&*...)
 
-### Interfaccia
+### Token
+- I token hanno una durata di **7 giorni**
+- Vengono automaticamente verificati ad ogni caricamento
+- Token scaduti richiedono un nuovo login
 
-- **Routing**: Navigazione tra Home e About
-- **Switch Navigazione**: Floating bar in alto a sinistra (🏠 Home / ℹ️ About)
-- **Floating Bar Centrale**: Filtri e azioni principali (solo su Home)
-- **Dark Mode**: Toggle tema chiaro/scuro persistente
-- **Responsive**: Layout adattivo per tutti i dispositivi
+### Storage
+I dati utente sono salvati nel localStorage:
+- `taskboard_users` - Array di utenti registrati
+- `taskboard_auth_token` - Token di autenticazione corrente
+- `user` - Informazioni utente corrente (per compatibilità)
 
-### API Operations
+> ⚠️ **Nota**: Questo è un sistema di autenticazione demo. In produzione, usare un sistema di autenticazione sicuro lato server con password hashate e token JWT.
 
-| Metodo | Endpoint | Descrizione |
-|--------|----------|-------------|
-| GET | `/tasks` | Recupera tutte le task |
-| GET | `/tasks/:id` | Recupera task specifica |
-| POST | `/tasks` | Crea nuova task |
-| PATCH | `/tasks/:id` | Aggiorna task esistente |
-| DELETE | `/tasks/:id` | Elimina task |
+## 🗄️ API
 
-## 🔧 Note Tecniche
+L'applicazione utilizza JSON Server per una REST API mock:
 
-### Context API
+### Endpoints
 
-L'applicazione utilizza React Context per gestire lo stato globale:
-- `isDark`: Stato del tema (light/dark)
-- `filter`: Filtro attivo per i task
-- `isModalOpen`: Stato di apertura del modal
+- `GET /tasks` - Ottieni tutti i task
+- `POST /tasks` - Crea un nuovo task
+- `GET /tasks/:id` - Ottieni un task specifico
+- `PATCH /tasks/:id` - Aggiorna un task
+- `DELETE /tasks/:id` - Elimina un task
 
-### Tailwind CSS
+### Esempio Request
 
-- **Dark Mode**: Configurato con strategia `class`
-- **PostCSS**: Utilizza file `.cjs` per compatibilità con ES Modules
-- **Purge**: Configurato per scansionare tutti i file `.tsx` e `.jsx`
-
-### TypeScript
-
-- **Strict Mode**: Abilitato per type safety massimo
-- **Interfaces**: Tipo `Task` definito ed esportato da `Home.tsx`
-- **Type Safety**: Props e state tipizzati completamente
-
-### JSON Server
-
-Il file `tasks.json` contiene i dati iniziali nel formato:
-
-```json
-{
-  "tasks": [
-    {
-      "id": "1",
-      "title": "Task Title",
-      "description": "Task Description",
-      "status": "todo",
-      "createdAt": "2025-12-01T10:00:00Z"
-    }
-  ]
-}
+```javascript
+// Crea un nuovo task
+fetch('http://localhost:3000/tasks', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({
+    title: 'Nuovo Task',
+    description: 'Descrizione del task',
+    status: 'todo',
+    difficulty: 'medium',
+    startDate: '2025-12-03',
+    dueDate: '2025-12-10',
+    createdAt: new Date().toISOString()
+  })
+})
 ```
 
-## ⚠️ Problemi Noti
+## 📱 Responsive Design
 
-### Porte Già in Uso
+L'applicazione è completamente responsive:
 
-Se ricevi errori tipo "Port already in use":
-- Vite cercherà automaticamente la prossima porta disponibile
-- Oppure termina i processi esistenti: `npx kill-port 5173 3000`
+- **Desktop (≥1024px)**: Layout a 3 colonne con sidebar laterale
+- **Tablet (768px-1023px)**: Layout a 2 colonne
+- **Mobile (<768px)**: Layout a colonna singola con menu bottom
 
-### CSS Non Caricato
+## 🎨 Temi
 
-Se gli stili Tailwind non vengono applicati:
-1. Ferma il server dev (`Ctrl+C`)
-2. Elimina la cache: `rm -rf node_modules/.vite`
-3. Riavvia: `npm run dev`
+### Light Mode
+- Colori chiari e vibranti
+- Ottimo per ambienti luminosi
+- Contrasto ottimizzato per leggibilità
 
-### Export/Import TypeScript
+### Dark Mode
+- Palette scura con accenti colorati
+- Riduce l'affaticamento degli occhi
+- Perfetto per sessioni notturne
 
-Se vedi errori come "does not provide an export named 'Task'":
-- Assicurati che tutti i file siano salvati
-- Riavvia completamente il dev server
-- Cancella la cache del browser (`Ctrl+Shift+R`)
+## 🛠️ Script Disponibili
 
-### Git Remote Issues
-
-Se hai problemi con `upstream already exists`:
 ```bash
-git remote remove upstream
+npm run dev        # Avvia il server di sviluppo
+npm run build      # Crea build di produzione
+npm run preview    # Anteprima build di produzione
+npm run lint       # Esegui ESLint
+npm run api        # Avvia JSON Server (porta 3000)
 ```
 
-## 👨‍💻 Sviluppo
+## 🤝 Contribuire
 
-### Workflow Git
+Le contribuzioni sono benvenute! Per contribuire:
 
-1. Crea una feature branch: `git checkout -b feature/nome-feature`
-2. Fai le modifiche e commit frequenti
-3. Push: `git push -u origin feature/nome-feature`
-4. Apri Pull Request su GitHub
-5. Merge dopo review
-
-### Best Practices
-
-- ✅ Commit messaggi chiari e descrittivi
-- ✅ Codice formattato e lintato
-- ✅ Componenti piccoli e riutilizzabili
-- ✅ Tipizzazione TypeScript completa
+1. Fai un fork del progetto
+2. Crea un branch per la tua feature (`git checkout -b feature/AmazingFeature`)
+3. Commit delle modifiche (`git commit -m 'Add some AmazingFeature'`)
+4. Push al branch (`git push origin feature/AmazingFeature`)
+5. Apri una Pull Request
 
 ## 📝 Licenza
 
-Questo progetto è privato e a scopo dimostrativo.
+Questo progetto è rilasciato sotto licenza MIT.
 
-## 👤 Autore
+## 👨‍💻 Autore
 
-**Tommaso Salvadori**
-- GitHub: [@tommasosalvadori](https://github.com/tommasosalvadori)
-- Email: tommaso.salvadori@fuzzymarketing.it
+Creato con ❤️ per la gestione efficiente dei task.
 
 ---
 
-Made with ❤️ using React + TypeScript + Vite
-
-### 2. Avvia il Server di Sviluppo (Vite)
-
-In un **secondo terminale**, esegui:
-
-```bash
-npm run dev
-```
-
-Questo avvierà l'applicazione React sulla porta **5173** (o successiva se occupata):
-- 🌐 URL: `http://localhost:5173/`
-- ⚡ Hot Module Replacement abilitato
-
-### 3. Apri nel Browser
-
-Naviga su `http://localhost:5173/` per utilizzare l'applicazione.
-
-## 📜 Comandi Principali
-
-| Comando | Descrizione |
-|---------|-------------|
-| `npm install` | Installa tutte le dipendenze |
-| `npm run dev` | Avvia il server di sviluppo Vite |
-| `npm run api` | Avvia la fake API JSON Server |
-| `npm run build` | Crea build di produzione |
-| `npm run preview` | Preview della build di produzione |
-| `npm run lint` | Esegue ESLint per controllo codice |
-
-## 📁 Struttura Cartelle
-
-```
-taskboard-demo/
-├── public/              # Asset statici
-│   └── vite.svg
-├── src/
-│   ├── assets/          # Immagini e risorse
-│   │   └── react.svg
-│   ├── components/      # Componenti React riutilizzabili
-│   │   ├── TaskCard.tsx      # Card per visualizzare singolo task
-│   │   └── TaskModal.tsx     # Modal per create/edit task
-│   ├── pages/           # Pagine dell'applicazione
-│   │   ├── Home.tsx          # Pagina principale con task board
-│   │   └── About.tsx         # Pagina informativa
-│   ├── App.tsx          # Componente root con routing e context
-│   ├── main.tsx         # Entry point dell'applicazione
-│   ├── index.css        # Stili globali e direttive Tailwind
-│   └── App.css          # Stili specifici App (legacy)
-├── tasks.json           # Database fake per JSON Server
-├── tailwind.config.js   # Configurazione Tailwind CSS
-├── postcss.config.cjs   # Configurazione PostCSS
-├── vite.config.ts       # Configurazione Vite
-├── tsconfig.json        # Configurazione TypeScript
-├── package.json         # Dipendenze e scripts
-└── README.md            # Questo file
-```
-
-## 🎯 Funzionalità Implementate
-
-### Gestione Task
-
-- **Visualizzazione**: Griglia responsive con card
-- **Creazione**: Modal con form per nuove task (stato default: "todo")
-- **Modifica**: Click su una card per modificare titolo, descrizione e stato
-- **Filtri**: Visualizza task per stato (Tutti, Da fare, In corso, Completati)
-
-### Interfaccia
-
-- **Routing**: Navigazione tra Home e About
-- **Switch Navigazione**: Floating bar in alto a sinistra (🏠 Home / ℹ️ About)
-- **Floating Bar Centrale**: Filtri e azioni principali (solo su Home)
-- **Dark Mode**: Toggle tema chiaro/scuro persistente
-- **Responsive**: Layout adattivo per tutti i dispositivi
-
-### API Operations
-
-| Metodo | Endpoint | Descrizione |
-|--------|----------|-------------|
-| GET | `/tasks` | Recupera tutte le task |
-| GET | `/tasks/:id` | Recupera task specifica |
-| POST | `/tasks` | Crea nuova task |
-| PATCH | `/tasks/:id` | Aggiorna task esistente |
-| DELETE | `/tasks/:id` | Elimina task |
-
-## 🔧 Note Tecniche
-
-### Context API
-
-L'applicazione utilizza React Context per gestire lo stato globale:
-- `isDark`: Stato del tema (light/dark)
-- `filter`: Filtro attivo per i task
-- `isModalOpen`: Stato di apertura del modal
-
-### Tailwind CSS
-
-- **Dark Mode**: Configurato con strategia `class`
-- **PostCSS**: Utilizza file `.cjs` per compatibilità con ES Modules
-- **Purge**: Configurato per scansionare tutti i file `.tsx` e `.jsx`
-
-### TypeScript
-
-- **Strict Mode**: Abilitato per type safety massimo
-- **Interfaces**: Tipo `Task` definito ed esportato da `Home.tsx`
-- **Type Safety**: Props e state tipizzati completamente
-
-### JSON Server
-
-Il file `tasks.json` contiene i dati iniziali nel formato:
-
-```json
-{
-  "tasks": [
-    {
-      "id": "1",
-      "title": "Task Title",
-      "description": "Task Description",
-      "status": "todo",
-      "createdAt": "2025-12-01T10:00:00Z"
-    }
-  ]
-}
-```
-
-## ⚠️ Problemi Noti
-
-### Porte Già in Uso
-
-Se ricevi errori tipo "Port already in use":
-- Vite cercherà automaticamente la prossima porta disponibile
-- Oppure termina i processi esistenti: `npx kill-port 5173 3000`
-
-### CSS Non Caricato
-
-Se gli stili Tailwind non vengono applicati:
-1. Ferma il server dev (`Ctrl+C`)
-2. Elimina la cache: `rm -rf node_modules/.vite`
-3. Riavvia: `npm run dev`
-
-### Export/Import TypeScript
-
-Se vedi errori come "does not provide an export named 'Task'":
-- Assicurati che tutti i file siano salvati
-- Riavvia completamente il dev server
-- Cancella la cache del browser (`Ctrl+Shift+R`)
-
-### Git Remote Issues
-
-Se hai problemi con `upstream already exists`:
-```bash
-git remote remove upstream
-```
-
-## 👨‍💻 Sviluppo
-
-### Workflow Git
-
-1. Crea una feature branch: `git checkout -b feature/nome-feature`
-2. Fai le modifiche e commit frequenti
-3. Push: `git push -u origin feature/nome-feature`
-4. Apri Pull Request su GitHub
-5. Merge dopo review
-
-### Best Practices
-
-- ✅ Commit messaggi chiari e descrittivi
-- ✅ Codice formattato e lintato
-- ✅ Componenti piccoli e riutilizzabili
-- ✅ Tipizzazione TypeScript completa
-
-## 📝 Licenza
-
-Questo progetto è privato e a scopo dimostrativo.
-
-## 👤 Autore
-
-**Tommaso Salvadori**
-- GitHub: [@tommasosalvadori](https://github.com/tommasosalvadori)
-- Email: tommaso.salvadori@fuzzymarketing.it
-
----
-
-Made with ❤️ using React + TypeScript + Vite
-
-### 2. Avvia il Server di Sviluppo (Vite)
-
-In un **secondo terminale**, esegui:
-
-```bash
-npm run dev
-```
-
-Questo avvierà l'applicazione React sulla porta **5173** (o successiva se occupata):
-- 🌐 URL: `http://localhost:5173/`
-- ⚡ Hot Module Replacement abilitato
-
-### 3. Apri nel Browser
-
-Naviga su `http://localhost:5173/` per utilizzare l'applicazione.
-
-## 📜 Comandi Principali
-
-| Comando | Descrizione |
-|---------|-------------|
-| `npm install` | Installa tutte le dipendenze |
-| `npm run dev` | Avvia il server di sviluppo Vite |
-| `npm run api` | Avvia la fake API JSON Server |
-| `npm run build` | Crea build di produzione |
-| `npm run preview` | Preview della build di produzione |
-| `npm run lint` | Esegue ESLint per controllo codice |
-
-## 📁 Struttura Cartelle
-
-```
-taskboard-demo/
-├── public/              # Asset statici
-│   └── vite.svg
-├── src/
-│   ├── assets/          # Immagini e risorse
-│   │   └── react.svg
-│   ├── components/      # Componenti React riutilizzabili
-│   │   ├── TaskCard.tsx      # Card per visualizzare singolo task
-│   │   └── TaskModal.tsx     # Modal per create/edit task
-│   ├── pages/           # Pagine dell'applicazione
-│   │   ├── Home.tsx          # Pagina principale con task board
-│   │   └── About.tsx         # Pagina informativa
-│   ├── App.tsx          # Componente root con routing e context
-│   ├── main.tsx         # Entry point dell'applicazione
-│   ├── index.css        # Stili globali e direttive Tailwind
-│   └── App.css          # Stili specifici App (legacy)
-├── tasks.json           # Database fake per JSON Server
-├── tailwind.config.js   # Configurazione Tailwind CSS
-├── postcss.config.cjs   # Configurazione PostCSS
-├── vite.config.ts       # Configurazione Vite
-├── tsconfig.json        # Configurazione TypeScript
-├── package.json         # Dipendenze e scripts
-└── README.md            # Questo file
-```
-
-## 🎯 Funzionalità Implementate
-
-### Gestione Task
-
-- **Visualizzazione**: Griglia responsive con card
-- **Creazione**: Modal con form per nuove task (stato default: "todo")
-- **Modifica**: Click su una card per modificare titolo, descrizione e stato
-- **Filtri**: Visualizza task per stato (Tutti, Da fare, In corso, Completati)
-
-### Interfaccia
-
-- **Routing**: Navigazione tra Home e About
-- **Switch Navigazione**: Floating bar in alto a sinistra (🏠 Home / ℹ️ About)
-- **Floating Bar Centrale**: Filtri e azioni principali (solo su Home)
-- **Dark Mode**: Toggle tema chiaro/scuro persistente
-- **Responsive**: Layout adattivo per tutti i dispositivi
-
-### API Operations
-
-| Metodo | Endpoint | Descrizione |
-|--------|----------|-------------|
-| GET | `/tasks` | Recupera tutte le task |
-| GET | `/tasks/:id` | Recupera task specifica |
-| POST | `/tasks` | Crea nuova task |
-| PATCH | `/tasks/:id` | Aggiorna task esistente |
-| DELETE | `/tasks/:id` | Elimina task |
-
-## 🔧 Note Tecniche
-
-### Context API
-
-L'applicazione utilizza React Context per gestire lo stato globale:
-- `isDark`: Stato del tema (light/dark)
-- `filter`: Filtro attivo per i task
-- `isModalOpen`: Stato di apertura del modal
-
-### Tailwind CSS
-
-- **Dark Mode**: Configurato con strategia `class`
-- **PostCSS**: Utilizza file `.cjs` per compatibilità con ES Modules
-- **Purge**: Configurato per scansionare tutti i file `.tsx` e `.jsx`
-
-### TypeScript
-
-- **Strict Mode**: Abilitato per type safety massimo
-- **Interfaces**: Tipo `Task` definito ed esportato da `Home.tsx`
-- **Type Safety**: Props e state tipizzati completamente
-
-### JSON Server
-
-Il file `tasks.json` contiene i dati iniziali nel formato:
-
-```json
-{
-  "tasks": [
-    {
-      "id": "1",
-      "title": "Task Title",
-      "description": "Task Description",
-      "status": "todo",
-      "createdAt": "2025-12-01T10:00:00Z"
-    }
-  ]
-}
-```
-
-## ⚠️ Problemi Noti
-
-### Porte Già in Uso
-
-Se ricevi errori tipo "Port already in use":
-- Vite cercherà automaticamente la prossima porta disponibile
-- Oppure termina i processi esistenti: `npx kill-port 5173 3000`
-
-### CSS Non Caricato
-
-Se gli stili Tailwind non vengono applicati:
-1. Ferma il server dev (`Ctrl+C`)
-2. Elimina la cache: `rm -rf node_modules/.vite`
-3. Riavvia: `npm run dev`
-
-### Export/Import TypeScript
-
-Se vedi errori come "does not provide an export named 'Task'":
-- Assicurati che tutti i file siano salvati
-- Riavvia completamente il dev server
-- Cancella la cache del browser (`Ctrl+Shift+R`)
-
-### Git Remote Issues
-
-Se hai problemi con `upstream already exists`:
-```bash
-git remote remove upstream
-```
-
-## 👨‍💻 Sviluppo
-
-### Workflow Git
-
-1. Crea una feature branch: `git checkout -b feature/nome-feature`
-2. Fai le modifiche e commit frequenti
-3. Push: `git push -u origin feature/nome-feature`
-4. Apri Pull Request su GitHub
-5. Merge dopo review
-
-### Best Practices
-
-- ✅ Commit messaggi chiari e descrittivi
-- ✅ Codice formattato e lintato
-- ✅ Componenti piccoli e riutilizzabili
-- ✅ Tipizzazione TypeScript completa
-
-## 📝 Licenza
-
-Questo progetto è privato e a scopo dimostrativo.
-
-## 👤 Autore
-
-**Tommaso Salvadori**
-- GitHub: [@tommasosalvadori](https://github.com/tommasosalvadori)
-- Email: tommaso.salvadori@fuzzymarketing.it
-
----
-
-Made with ❤️ using React + TypeScript + Vite
-
-### 2. Avvia il Server di Sviluppo (Vite)
-
-In un **secondo terminale**, esegui:
-
-```bash
-npm run dev
-```
-
-Questo avvierà l'applicazione React sulla porta **5173** (o successiva se occupata):
-- 🌐 URL: `http://localhost:5173/`
-- ⚡ Hot Module Replacement abilitato
-
-### 3. Apri nel Browser
-
-Naviga su `http://localhost:5173/` per utilizzare l'applicazione.
-
-## 📜 Comandi Principali
-
-| Comando | Descrizione |
-|---------|-------------|
-| `npm install` | Installa tutte le dipendenze |
-| `npm run dev` | Avvia il server di sviluppo Vite |
-| `npm run api` | Avvia la fake API JSON Server |
-| `npm run build` | Crea build di produzione |
-| `npm run preview` | Preview della build di produzione |
-| `npm run lint` | Esegue ESLint per controllo codice |
-
-## 📁 Struttura Cartelle
-
-```
-taskboard-demo/
-├── public/              # Asset statici
-│   └── vite.svg
-├── src/
-│   ├── assets/          # Immagini e risorse
-│   │   └── react.svg
-│   ├── components/      # Componenti React riutilizzabili
-│   │   ├── TaskCard.tsx      # Card per visualizzare singolo task
-│   │   └── TaskModal.tsx     # Modal per create/edit task
-│   ├── pages/           # Pagine dell'applicazione
-│   │   ├── Home.tsx          # Pagina principale con task board
-│   │   └── About.tsx         # Pagina informativa
-│   ├── App.tsx          # Componente root con routing e context
-│   ├── main.tsx         # Entry point dell'applicazione
-│   ├── index.css        # Stili globali e direttive Tailwind
-│   └── App.css          # Stili specifici App (legacy)
-├── tasks.json           # Database fake per JSON Server
-├── tailwind.config.js   # Configurazione Tailwind CSS
-├── postcss.config.cjs   # Configurazione PostCSS
-├── vite.config.ts       # Configurazione Vite
-├── tsconfig.json        # Configurazione TypeScript
-├── package.json         # Dipendenze e scripts
-└── README.md            # Questo file
-```
-
-## 🎯 Funzionalità Implementate
-
-### Gestione Task
-
-- **Visualizzazione**: Griglia responsive con card
-- **Creazione**: Modal con form per nuove task (stato default: "todo")
-- **Modifica**: Click su una card per modificare titolo, descrizione e stato
-- **Filtri**: Visualizza task per stato (Tutti, Da fare, In corso, Completati)
-
-### Interfaccia
-
-- **Routing**: Navigazione tra Home e About
-- **Switch Navigazione**: Floating bar in alto a sinistra (🏠 Home / ℹ️ About)
-- **Floating Bar Centrale**: Filtri e azioni principali (solo su Home)
-- **Dark Mode**: Toggle tema chiaro/scuro persistente
-- **Responsive**: Layout adattivo per tutti i dispositivi
-
-### API Operations
-
-| Metodo | Endpoint | Descrizione |
-|--------|----------|-------------|
-| GET | `/tasks` | Recupera tutte le task |
-| GET | `/tasks/:id` | Recupera task specifica |
-| POST | `/tasks` | Crea nuova task |
-| PATCH | `/tasks/:id` | Aggiorna task esistente |
-| DELETE | `/tasks/:id` | Elimina task |
-
-## 🔧 Note Tecniche
-
-### Context API
-
-L'applicazione utilizza React Context per gestire lo stato globale:
-- `isDark`: Stato del tema (light/dark)
-- `filter`: Filtro attivo per i task
-- `isModalOpen`: Stato di apertura del modal
-
-### Tailwind CSS
-
-- **Dark Mode**: Configurato con strategia `class`
-- **PostCSS**: Utilizza file `.cjs` per compatibilità con ES Modules
-- **Purge**: Configurato per scansionare tutti i file `.tsx` e `.jsx`
-
-### TypeScript
-
-- **Strict Mode**: Abilitato per type safety massimo
-- **Interfaces**: Tipo `Task` definito ed esportato da `Home.tsx`
-- **Type Safety**: Props e state tipizzati completamente
-
-### JSON Server
-
-Il file `tasks.json` contiene i dati iniziali nel formato:
-
-```json
-{
-  "tasks": [
-    {
-      "id": "1",
-      "title": "Task Title",
-      "description": "Task Description",
-      "status": "todo",
-      "createdAt": "2025-12-01T10:00:00Z"
-    }
-  ]
-}
-```
-
-## ⚠️ Problemi Noti
-
-### Porte Già in Uso
-
-Se ricevi errori tipo "Port already in use":
-- Vite cercherà automaticamente la prossima porta disponibile
-- Oppure termina i processi esistenti: `npx kill-port 5173 3000`
-
-### CSS Non Caricato
-
-Se gli stili Tailwind non vengono applicati:
-1. Ferma il server dev (`Ctrl+C`)
-2. Elimina la cache: `rm -rf node_modules/.vite`
-3. Riavvia: `npm run dev`
-
-### Export/Import TypeScript
-
-Se vedi errori come "does not provide an export named 'Task'":
-- Assicurati che tutti i file siano salvati
-- Riavvia completamente il dev server
-- Cancella la cache del browser (`Ctrl+Shift+R`)
-
-### Git Remote Issues
-
-Se hai problemi con `upstream already exists`:
-```bash
-git remote remove upstream
-```
-
-## 👨‍💻 Sviluppo
-
-### Workflow Git
-
-1. Crea una feature branch: `git checkout -b feature/nome-feature`
-2. Fai le modifiche e commit frequenti
-3. Push: `git push -u origin feature/nome-feature`
-4. Apri Pull Request su GitHub
-5. Merge dopo review
-
-### Best Practices
-
-- ✅ Commit messaggi chiari e descrittivi
-- ✅ Codice formattato e lintato
-- ✅ Componenti piccoli e riutilizzabili
-- ✅ Tipizzazione TypeScript completa
-
-## 📝 Licenza
-
-Questo progetto è privato e a scopo dimostrativo.
-
-## 👤 Autore
-
-**Tommaso Salvadori**
-- GitHub: [@tommasosalvadori](https://github.com/tommasosalvadori)
-- Email: tommaso.salvadori@fuzzymarketing.it
-
----
-
-Made with ❤️ using React + TypeScript + Vite
-
-### 2. Avvia il Server di Sviluppo (Vite)
-
-In un **secondo terminale**, esegui:
-
-```bash
-npm run dev
-```
-
-Questo avvierà l'applicazione React sulla porta **5173** (o successiva se occupata):
-- 🌐 URL: `http://localhost:5173/`
-- ⚡ Hot Module Replacement abilitato
-
-### 3. Apri nel Browser
-
-Naviga su `http://localhost:5173/` per utilizzare l'applicazione.
-
-## 📜 Comandi Principali
-
-| Comando | Descrizione |
-|---------|-------------|
-| `npm install` | Installa tutte le dipendenze |
-| `npm run dev` | Avvia il server di sviluppo Vite |
-| `npm run api` | Avvia la fake API JSON Server |
-| `npm run build` | Crea build di produzione |
-| `npm run preview` | Preview della build di produzione |
-| `npm run lint` | Esegue ESLint per controllo codice |
-
-## 📁 Struttura Cartelle
-
-```
-taskboard-demo/
-├── public/              # Asset statici
-│   └── vite.svg
-├── src/
-│   ├── assets/          # Immagini e risorse
-│   │   └── react.svg
-│   ├── components/      # Componenti React riutilizzabili
-│   │   ├── TaskCard.tsx      # Card per visualizzare singolo task
-│   │   └── TaskModal.tsx     # Modal per create/edit task
-│   ├── pages/           # Pagine dell'applicazione
-│   │   ├── Home.tsx          # Pagina principale con task board
-│   │   └── About.tsx         # Pagina informativa
-│   ├── App.tsx          # Componente root con routing e context
-│   ├── main.tsx         # Entry point dell'applicazione
-│   ├── index.css        # Stili globali e direttive Tailwind
-│   └── App.css          # Stili specifici App (legacy)
-├── tasks.json           # Database fake per JSON Server
-├── tailwind.config.js   # Configurazione Tailwind CSS
-├── postcss.config.cjs   # Configurazione PostCSS
-├── vite.config.ts       # Configurazione Vite
-├── tsconfig.json        # Configurazione TypeScript
-├── package.json         # Dipendenze e scripts
-└── README.md            # Questo file
-```
-
-## 🎯 Funzionalità Implementate
-
-### Gestione Task
-
-- **Visualizzazione**: Griglia responsive con card
-- **Creazione**: Modal con form per nuove task (stato default: "todo")
-- **Modifica**: Click su una card per modificare titolo, descrizione e stato
-- **Filtri**: Visualizza task per stato (Tutti, Da fare, In corso, Completati)
-
-### Interfaccia
-
-- **Routing**: Navigazione tra Home e About
-- **Switch Navigazione**: Floating bar in alto a sinistra (🏠 Home / ℹ️ About)
-- **Floating Bar Centrale**: Filtri e azioni principali (solo su Home)
-- **Dark Mode**: Toggle tema chiaro/scuro persistente
-- **Responsive**: Layout adattivo per tutti i dispositivi
-
-### API Operations
-
-| Metodo | Endpoint | Descrizione |
-|--------|----------|-------------|
-| GET | `/tasks` | Recupera tutte le task |
-| GET | `/tasks/:id` | Recupera task specifica |
-| POST | `/tasks` | Crea nuova task |
-| PATCH | `/tasks/:id` | Aggiorna task esistente |
-| DELETE | `/tasks/:id` | Elimina task |
-
-## 🔧 Note Tecniche
-
-### Context API
-
-L'applicazione utilizza React Context per gestire lo stato globale:
-- `isDark`: Stato del tema (light/dark)
-- `filter`: Filtro attivo per i task
-- `isModalOpen`: Stato di apertura del modal
-
-### Tailwind CSS
-
-- **Dark Mode**: Configurato con strategia `class`
-- **PostCSS**: Utilizza file `.cjs` per compatibilità con ES Modules
-- **Purge**: Configurato per scansionare tutti i file `.tsx` e `.jsx`
-
-### TypeScript
-
-- **Strict Mode**: Abilitato per type safety massimo
-- **Interfaces**: Tipo `Task` definito ed esportato da `Home.tsx`
-- **Type Safety**: Props e state tipizzati completamente
-
-### JSON Server
-
-Il file `tasks.json` contiene i dati iniziali nel formato:
-
-```json
-{
-  "tasks": [
-    {
-      "id": "1",
-      "title": "Task Title",
-      "description": "Task Description",
-      "status": "todo",
-      "createdAt": "2025-12-01T10:00:00Z"
-    }
-  ]
-}
-```
-
-## ⚠️ Problemi Noti
-
-### Porte Già in Uso
-
-Se ricevi errori tipo "Port already in use":
-- Vite cercherà automaticamente la prossima porta disponibile
-- Oppure termina i processi esistenti: `npx kill-port 5173 3000`
-
-### CSS Non Caricato
-
-Se gli stili Tailwind non vengono applicati:
-1. Ferma il server dev (`Ctrl+C`)
-2. Elimina la cache: `rm -rf node_modules/.vite`
-3. Riavvia: `npm run dev`
-
-### Export/Import TypeScript
-
-Se vedi errori come "does not provide an export named 'Task'":
-- Assicurati che tutti i file siano salvati
-- Riavvia completamente il dev server
-- Cancella la cache del browser (`Ctrl+Shift+R`)
-
-### Git Remote Issues
-
-Se hai problemi con `upstream already exists`:
-```bash
-git remote remove upstream
-```
-
-## 👨‍💻 Sviluppo
-
-### Workflow Git
-
-1. Crea una feature branch: `git checkout -b feature/nome-feature`
-2. Fai le modifiche e commit frequenti
-3. Push: `git push -u origin feature/nome-feature`
-4. Apri Pull Request su GitHub
-5. Merge dopo review
-
-### Best Practices
-
-- ✅ Commit messaggi chiari e descrittivi
-- ✅ Codice formattato e lintato
-- ✅ Componenti piccoli e riutilizzabili
-- ✅ Tipizzazione TypeScript completa
-
-## 📝 Licenza
-
-Questo progetto è privato e a scopo dimostrativo.
-
-## 👤 Autore
-
-**Tommaso Salvadori**
-- GitHub: [@tommasosalvadori](https://github.com/tommasosalvadori)
-- Email: tommaso.salvadori@fuzzymarketing.it
-
----
-
-Made with ❤️ using React + TypeScript + Vite
+**Nota**: Questa è un'applicazione demo. I dati sono salvati solo nel browser (localStorage e JSON Server locale). Per un uso in produzione, implementare un backend sicuro con database persistente.
