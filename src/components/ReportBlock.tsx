@@ -6,9 +6,11 @@ import { parseLocalDate } from '../utils/dateUtils';
 
 interface ReportBlockProps {
   tasks: Task[];
+  onStatClick?: (type: 'all' | 'completed' | 'overdue' | 'todo' | 'in-progress' | 'not-started') => void;
+  onDifficultyClick?: (difficulty: 'low' | 'medium' | 'high') => void;
 }
 
-function ReportBlock({ tasks }: ReportBlockProps) {
+function ReportBlock({ tasks, onStatClick, onDifficultyClick }: ReportBlockProps) {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [dataScope, setDataScope] = useState<'monthly' | 'all'>('monthly');
 
@@ -210,16 +212,19 @@ function ReportBlock({ tasks }: ReportBlockProps) {
       {/* Stats Grid Compatto */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
         {[
-          { label: 'Totali', value: stats.total, icon: TrendingUp, color: 'text-blue-600 dark:text-blue-400', bg: 'bg-blue-50 dark:bg-blue-900/20' },
-          { label: 'Completati', value: stats.completed, icon: CheckCircle2, color: 'text-green-600 dark:text-green-400', bg: 'bg-green-50 dark:bg-green-900/20' },
-          { label: 'In Corso', value: stats.inProgress, icon: Clock, color: 'text-orange-600 dark:text-orange-400', bg: 'bg-orange-50 dark:bg-orange-900/20' },
-          { label: 'In Ritardo', value: stats.overdue, icon: AlertTriangle, color: 'text-red-600 dark:text-red-400', bg: 'bg-red-50 dark:bg-red-900/20' },
+          { label: 'Totali', value: stats.total, icon: TrendingUp, color: 'text-blue-600 dark:text-blue-400', bg: 'bg-blue-50 dark:bg-blue-900/20', type: 'all' as const },
+          { label: 'Completati', value: stats.completed, icon: CheckCircle2, color: 'text-green-600 dark:text-green-400', bg: 'bg-green-50 dark:bg-green-900/20', type: 'completed' as const },
+          { label: 'In Corso', value: stats.inProgress, icon: Clock, color: 'text-orange-600 dark:text-orange-400', bg: 'bg-orange-50 dark:bg-orange-900/20', type: 'in-progress' as const },
+          { label: 'In Ritardo', value: stats.overdue, icon: AlertTriangle, color: 'text-red-600 dark:text-red-400', bg: 'bg-red-50 dark:bg-red-900/20', type: 'overdue' as const },
         ].map((stat) => {
           const Icon = stat.icon;
           return (
-            <div
+            <button
               key={stat.label}
-              className={`${stat.bg} rounded-xl p-4 transition-all`}
+              onClick={() => onStatClick?.(stat.type)}
+              className={`${stat.bg} rounded-xl p-4 transition-all ${
+                onStatClick ? 'hover:scale-105 hover:shadow-md cursor-pointer active:scale-100' : ''
+              }`}
             >
               <div className="flex items-center justify-between mb-2">
                 <Icon size={20} strokeWidth={2.5} className={stat.color} />
@@ -230,7 +235,7 @@ function ReportBlock({ tasks }: ReportBlockProps) {
               <div className="text-xs font-medium text-slate-600 dark:text-slate-400">
                 {stat.label}
               </div>
-            </div>
+            </button>
           );
         })}
       </div>
@@ -276,7 +281,12 @@ function ReportBlock({ tasks }: ReportBlockProps) {
         {/* Dettagli Aggiuntivi */}
         <div className="space-y-6">
           {/* Tasso Completamento */}
-          <div className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-md border border-gray-200 dark:border-slate-700 rounded-2xl shadow-lg p-6">
+          <button
+            onClick={() => onStatClick?.('completed')}
+            className={`bg-white/80 dark:bg-slate-800/80 backdrop-blur-md border border-gray-200 dark:border-slate-700 rounded-2xl shadow-lg p-6 w-full text-left transition-all ${
+              onStatClick ? 'hover:scale-105 hover:shadow-xl cursor-pointer active:scale-100' : ''
+            }`}
+          >
             <h3 className="text-sm font-bold text-slate-800 dark:text-slate-200 mb-3">Completamento</h3>
             {stats.total > 0 ? (
               <>
@@ -296,7 +306,7 @@ function ReportBlock({ tasks }: ReportBlockProps) {
             ) : (
               <p className="text-slate-500 dark:text-slate-400">N/A</p>
             )}
-          </div>
+          </button>
 
           {/* Durata Media */}
           <div className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-md border border-gray-200 dark:border-slate-700 rounded-2xl shadow-lg p-6">
@@ -322,26 +332,41 @@ function ReportBlock({ tasks }: ReportBlockProps) {
         <h3 className="text-lg font-bold text-slate-800 dark:text-slate-200 mb-4">Per Difficoltà</h3>
         
         <div className="grid grid-cols-3 gap-4">
-          <div className="text-center">
+          <button
+            onClick={() => onDifficultyClick?.('low')}
+            className={`text-center p-4 rounded-xl bg-green-50 dark:bg-green-900/20 transition-all ${
+              onDifficultyClick ? 'hover:scale-105 hover:shadow-md cursor-pointer active:scale-100' : ''
+            }`}
+          >
             <div className="text-3xl font-bold text-green-600 dark:text-green-400 mb-1">
               {stats.byDifficulty.low}
             </div>
             <div className="text-sm font-medium text-slate-600 dark:text-slate-400">Bassa</div>
-          </div>
+          </button>
 
-          <div className="text-center">
+          <button
+            onClick={() => onDifficultyClick?.('medium')}
+            className={`text-center p-4 rounded-xl bg-yellow-50 dark:bg-yellow-900/20 transition-all ${
+              onDifficultyClick ? 'hover:scale-105 hover:shadow-md cursor-pointer active:scale-100' : ''
+            }`}
+          >
             <div className="text-3xl font-bold text-yellow-600 dark:text-yellow-400 mb-1">
               {stats.byDifficulty.medium}
             </div>
             <div className="text-sm font-medium text-slate-600 dark:text-slate-400">Media</div>
-          </div>
+          </button>
 
-          <div className="text-center">
+          <button
+            onClick={() => onDifficultyClick?.('high')}
+            className={`text-center p-4 rounded-xl bg-red-50 dark:bg-red-900/20 transition-all ${
+              onDifficultyClick ? 'hover:scale-105 hover:shadow-md cursor-pointer active:scale-100' : ''
+            }`}
+          >
             <div className="text-3xl font-bold text-red-600 dark:text-red-400 mb-1">
               {stats.byDifficulty.high}
             </div>
             <div className="text-sm font-medium text-slate-600 dark:text-slate-400">Alta</div>
-          </div>
+          </button>
         </div>
       </div>
     </div>

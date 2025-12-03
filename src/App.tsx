@@ -1,4 +1,4 @@
-import { useState, useEffect, createContext, useContext } from 'react';
+import { useState, useEffect, createContext, useContext, useRef } from 'react';
 import type { Task } from './types';
 import { BrowserRouter, Routes, Route, useLocation, Link } from 'react-router-dom';
 import { 
@@ -18,6 +18,7 @@ import {
   Calendar,
   BarChart3
 } from 'lucide-react';
+import confetti from 'canvas-confetti';
 import Home from './pages/Home';
 import About from './pages/About';
 import Login from './pages/Login';
@@ -44,6 +45,7 @@ interface AppContextType {
   setIsCalendarView: (value: boolean) => void;
   isReportView: boolean;
   setIsReportView: (value: boolean) => void;
+  triggerConfetti: () => void;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -60,6 +62,21 @@ function AppContent() {
   const [tasks, setTasks] = useState<Task[]>([]);
   const isHome = location.pathname === '/';
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  
+  // Refs per lo sliding indicator (header centrale)
+  const buttonRefs = useRef<{ [key: string]: HTMLButtonElement | null }>({});
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  const [indicatorStyle, setIndicatorStyle] = useState({ left: 0, width: 0 });
+
+  // Refs per lo sliding indicator (Home/About) - Primo blocco (isHome)
+  const navButtonRefs1 = useRef<{ [key: string]: HTMLAnchorElement | null }>({});
+  const navContainerRef1 = useRef<HTMLDivElement | null>(null);
+  const [navIndicatorStyle1, setNavIndicatorStyle1] = useState({ left: 0, width: 0 });
+
+  // Refs per lo sliding indicator (Home/About) - Secondo blocco (!isHome)
+  const navButtonRefs2 = useRef<{ [key: string]: HTMLAnchorElement | null }>({});
+  const navContainerRef2 = useRef<HTMLDivElement | null>(null);
+  const [navIndicatorStyle2, setNavIndicatorStyle2] = useState({ left: 0, width: 0 });
 
   // Carica i task per passarli al report
   useEffect(() => {
@@ -69,10 +86,139 @@ function AppContent() {
       .catch(err => console.error("Errore API:", err));
   }, []);
 
+  // Aggiorna posizione dello sliding indicator
+  useEffect(() => {
+    const updateIndicator = () => {
+      let activeKey = '';
+      
+      if (isCalendarView) {
+        activeKey = 'calendar';
+      } else if (isReportView) {
+        activeKey = 'report';
+      } else {
+        activeKey = filter;
+      }
+      
+      const activeButton = buttonRefs.current[activeKey];
+      const container = containerRef.current;
+      
+      if (activeButton && container) {
+        const containerRect = container.getBoundingClientRect();
+        const buttonRect = activeButton.getBoundingClientRect();
+        
+        setIndicatorStyle({
+          left: buttonRect.left - containerRect.left,
+          width: buttonRect.width
+        });
+      }
+    };
+    
+    // Small delay per permettere al DOM di aggiornarsi
+    const timeout = setTimeout(updateIndicator, 50);
+    return () => clearTimeout(timeout);
+  }, [filter, isCalendarView, isReportView]);
+
+  // Inizializza indicator al primo render
+  useEffect(() => {
+    const initIndicator = () => {
+      const activeKey = filter;
+      const activeButton = buttonRefs.current[activeKey];
+      const container = containerRef.current;
+      
+      if (activeButton && container) {
+        const containerRect = container.getBoundingClientRect();
+        const buttonRect = activeButton.getBoundingClientRect();
+        
+        setIndicatorStyle({
+          left: buttonRect.left - containerRect.left,
+          width: buttonRect.width
+        });
+      }
+    };
+    
+    const timeout = setTimeout(initIndicator, 100);
+    return () => clearTimeout(timeout);
+  }, []); // Solo al mount
+
+  // Aggiorna posizione dello sliding indicator per Home/About - Blocco 1
+  useEffect(() => {
+    const updateNavIndicator1 = () => {
+      const activeKey = isHome ? 'home' : 'about';
+      const activeButton = navButtonRefs1.current[activeKey];
+      const container = navContainerRef1.current;
+      
+      if (activeButton && container) {
+        const containerRect = container.getBoundingClientRect();
+        const buttonRect = activeButton.getBoundingClientRect();
+        
+        setNavIndicatorStyle1({
+          left: buttonRect.left - containerRect.left,
+          width: buttonRect.width
+        });
+      }
+    };
+    
+    const timeout = setTimeout(updateNavIndicator1, 50);
+    return () => clearTimeout(timeout);
+  }, [isHome]);
+
+  // Aggiorna posizione dello sliding indicator per Home/About - Blocco 2
+  useEffect(() => {
+    const updateNavIndicator2 = () => {
+      const activeKey = isHome ? 'home' : 'about';
+      const activeButton = navButtonRefs2.current[activeKey];
+      const container = navContainerRef2.current;
+      
+      if (activeButton && container) {
+        const containerRect = container.getBoundingClientRect();
+        const buttonRect = activeButton.getBoundingClientRect();
+        
+        setNavIndicatorStyle2({
+          left: buttonRect.left - containerRect.left,
+          width: buttonRect.width
+        });
+      }
+    };
+    
+    const timeout = setTimeout(updateNavIndicator2, 50);
+    return () => clearTimeout(timeout);
+  }, [isHome]);
+
   // Scroll to top quando cambia la pagina
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [location.pathname]);
+
+  // Ricalcola indicatore al resize
+  useEffect(() => {
+    const handleResize = () => {
+      let activeKey = '';
+      
+      if (isCalendarView) {
+        activeKey = 'calendar';
+      } else if (isReportView) {
+        activeKey = 'report';
+      } else {
+        activeKey = filter;
+      }
+      
+      const activeButton = buttonRefs.current[activeKey];
+      const container = containerRef.current;
+      
+      if (activeButton && container) {
+        const containerRect = container.getBoundingClientRect();
+        const buttonRect = activeButton.getBoundingClientRect();
+        
+        setIndicatorStyle({
+          left: buttonRect.left - containerRect.left,
+          width: buttonRect.width
+        });
+      }
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, [filter, isCalendarView, isReportView]);
 
   // Chiudi menu mobile quando cambia la route
   useEffect(() => {
@@ -80,9 +226,65 @@ function AppContent() {
   }, [location.pathname]);
 
   // Funzioni di autenticazione
-  const handleLogout = () => {
-    authLogout();
-    setUser(null);
+  const handleLogout = (event: React.MouseEvent<HTMLButtonElement>) => {
+    // Effetto esplosione dal punto del click
+    const rect = event.currentTarget.getBoundingClientRect();
+    const x = (rect.left + rect.width / 2) / window.innerWidth;
+    const y = (rect.top + rect.height / 2) / window.innerHeight;
+
+    // Esplosione di particelle
+    const count = 50;
+    const defaults = {
+      origin: { x, y },
+      zIndex: 99999
+    };
+
+    function fire(particleRatio: number, opts: confetti.Options) {
+      confetti({
+        ...defaults,
+        ...opts,
+        particleCount: Math.floor(count * particleRatio)
+      });
+    }
+
+    // Esplosione multipla con effetto radiale
+    fire(0.25, {
+      spread: 26,
+      startVelocity: 55,
+      colors: ['#ef4444', '#f97316', '#fbbf24']
+    });
+
+    fire(0.2, {
+      spread: 60,
+      colors: ['#ef4444', '#dc2626', '#991b1b']
+    });
+
+    fire(0.35, {
+      spread: 100,
+      decay: 0.91,
+      scalar: 0.8,
+      colors: ['#fca5a5', '#f87171', '#dc2626']
+    });
+
+    fire(0.1, {
+      spread: 120,
+      startVelocity: 25,
+      decay: 0.92,
+      scalar: 1.2,
+      colors: ['#fee2e2', '#fecaca', '#fca5a5']
+    });
+
+    fire(0.1, {
+      spread: 120,
+      startVelocity: 45,
+      colors: ['#7f1d1d', '#991b1b', '#b91c1c']
+    });
+
+    // Logout dopo un piccolo delay
+    setTimeout(() => {
+      authLogout();
+      setUser(null);
+    }, 300);
   };
 
   const handleLogoClick = () => {
@@ -159,7 +361,20 @@ function AppContent() {
 
             {/* HEADER CENTRALE */}
             <div className="absolute left-1/2 -translate-x-1/2">
-              <div className="flex items-center gap-1 p-1.5 bg-white/80 dark:bg-slate-800/80 backdrop-blur-md border border-gray-200 dark:border-slate-700 rounded-full shadow-lg shadow-gray-200/50 dark:shadow-black/20">
+              <div 
+                ref={containerRef}
+                className="relative flex items-center gap-1 p-1.5 bg-white/80 dark:bg-slate-800/80 backdrop-blur-md border border-gray-200 dark:border-slate-700 rounded-full shadow-lg shadow-gray-200/50 dark:shadow-black/20"
+              >
+                {/* Sliding Indicator */}
+                <div
+                  className="absolute top-1.5 h-[calc(100%-12px)] bg-slate-900 dark:bg-white rounded-full shadow-sm pointer-events-none"
+                  style={{
+                    left: `${indicatorStyle.left}px`,
+                    width: `${indicatorStyle.width}px`,
+                    opacity: indicatorStyle.width > 0 ? 1 : 0,
+                    transition: 'left 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), width 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.2s ease-out'
+                  }}
+                />
                 
                 {[
                   { id: 'all', icon: LayoutGrid, label: 'Tutti' },
@@ -169,59 +384,62 @@ function AppContent() {
                 ].map(({ id, icon: Icon, label }) => (
                   <button
                     key={id}
+                    ref={(el) => (buttonRefs.current[id] = el)}
                     onClick={() => {
                       setFilter(id);
                       setIsCalendarView(false);
                       setIsReportView(false);
                     }}
                     title={label}
-                    className={`p-2.5 rounded-full transition-all duration-200 ${
+                    className={`relative z-10 p-2.5 rounded-full transition-all duration-200 active:scale-95 hover:scale-110 ${
                       filter === id && !isCalendarView && !isReportView
-                        ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-sm' 
-                        : 'text-slate-500 hover:bg-gray-100 dark:text-slate-400 dark:hover:bg-slate-700'
+                        ? 'text-white dark:text-slate-900' 
+                        : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'
                     }`}
                   >
                     <Icon size={18} strokeWidth={2.5} />
                   </button>
                 ))}
 
-                <div className="w-px h-6 bg-gray-200 dark:bg-slate-700 mx-1"></div>
+                <div className="w-px h-6 bg-gray-200 dark:bg-slate-700 mx-1 z-10"></div>
 
                 <button
+                  ref={(el) => (buttonRefs.current['calendar'] = el)}
                   onClick={() => {
                     setIsCalendarView(!isCalendarView);
                     setIsReportView(false);
                   }}
                   title="Calendario"
-                  className={`p-2.5 rounded-full transition-all duration-200 ${
+                  className={`relative z-10 p-2.5 rounded-full transition-all duration-200 active:scale-95 hover:scale-110 ${
                     isCalendarView
-                      ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-sm'
-                      : 'text-slate-500 hover:bg-gray-100 dark:text-slate-400 dark:hover:bg-slate-700'
+                      ? 'text-white dark:text-slate-900'
+                      : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'
                   }`}
                 >
                   <Calendar size={18} strokeWidth={2.5} />
                 </button>
 
                 <button
+                  ref={(el) => (buttonRefs.current['report'] = el)}
                   onClick={() => {
                     setIsReportView(!isReportView);
                     setIsCalendarView(false);
                   }}
                   title="Report Mensile"
-                  className={`p-2.5 rounded-full transition-all duration-200 ${
+                  className={`relative z-10 p-2.5 rounded-full transition-all duration-200 active:scale-95 hover:scale-110 ${
                     isReportView
-                      ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-sm'
-                      : 'text-slate-500 hover:bg-gray-100 dark:text-slate-400 dark:hover:bg-slate-700'
+                      ? 'text-white dark:text-slate-900'
+                      : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'
                   }`}
                 >
                   <BarChart3 size={18} strokeWidth={2.5} />
                 </button>
 
-                <div className="w-px h-6 bg-gray-200 dark:bg-slate-700 mx-1"></div>
+                <div className="w-px h-6 bg-gray-200 dark:bg-slate-700 mx-1 z-10"></div>
 
                 <button
                   onClick={() => setIsModalOpen(true)}
-                  className="p-2.5 rounded-full bg-blue-600 text-white hover:bg-blue-700 shadow-md hover:shadow-lg transition-all"
+                  className="relative z-10 p-2.5 rounded-full bg-blue-600 text-white hover:bg-blue-700 shadow-md hover:shadow-lg transition-all active:scale-95 hover:scale-110"
                   title="Nuovo Task"
                 >
                   <Plus size={18} strokeWidth={3} />
@@ -235,24 +453,39 @@ function AppContent() {
                 
                 <div className="flex items-center gap-3">
                   <nav className="flex-shrink-0">
-        <div className="flex items-center gap-1 p-1.5 bg-white/80 dark:bg-slate-800/80 backdrop-blur-md border border-gray-200 dark:border-slate-700 rounded-full shadow-lg shadow-gray-200/50 dark:shadow-black/20">
+        <div 
+          ref={navContainerRef1}
+          className="relative flex items-center gap-1 p-1.5 bg-white/80 dark:bg-slate-800/80 backdrop-blur-md border border-gray-200 dark:border-slate-700 rounded-full shadow-lg shadow-gray-200/50 dark:shadow-black/20"
+        >
+          {/* Sliding Indicator */}
+          <div
+            className="absolute top-1.5 h-[calc(100%-12px)] bg-slate-900 dark:bg-white rounded-full shadow-sm pointer-events-none"
+            style={{
+              left: `${navIndicatorStyle1.left}px`,
+              width: `${navIndicatorStyle1.width}px`,
+              opacity: navIndicatorStyle1.width > 0 ? 1 : 0,
+              transition: 'left 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), width 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.2s ease-out'
+            }}
+          />
           <Link
+            ref={(el) => (navButtonRefs1.current['home'] = el)}
             to="/"
-            className={`p-2.5 rounded-full transition-all duration-200 ${
+            className={`relative z-10 p-2.5 rounded-full transition-all duration-200 active:scale-95 hover:scale-110 ${
               isHome
-                ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-sm'
-                : 'text-slate-500 hover:bg-gray-100 dark:text-slate-400 dark:hover:bg-slate-700'
+                ? 'text-white dark:text-slate-900'
+                : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'
             }`}
             title="Home"
           >
             <HomeIcon size={18} strokeWidth={2.5} />
           </Link>
           <Link
+            ref={(el) => (navButtonRefs1.current['about'] = el)}
             to="/about"
-            className={`p-2.5 rounded-full transition-all duration-200 ${
+            className={`relative z-10 p-2.5 rounded-full transition-all duration-200 active:scale-95 hover:scale-110 ${
               !isHome
-                ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-sm'
-                : 'text-slate-500 hover:bg-gray-100 dark:text-slate-400 dark:hover:bg-slate-700'
+                ? 'text-white dark:text-slate-900'
+                : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'
             }`}
             title="About"
           >
@@ -380,27 +613,42 @@ function AppContent() {
                 
                 <div className="flex items-center gap-3">
                   <nav className="flex-shrink-0">
-                    <div className="flex items-center gap-1 p-1.5 bg-white/80 dark:bg-slate-800/80 backdrop-blur-md border border-gray-200 dark:border-slate-700 rounded-full shadow-lg shadow-gray-200/50 dark:shadow-black/20">
+                    <div 
+                      ref={navContainerRef2}
+                      className="relative flex items-center gap-1 p-1.5 bg-white/80 dark:bg-slate-800/80 backdrop-blur-md border border-gray-200 dark:border-slate-700 rounded-full shadow-lg shadow-gray-200/50 dark:shadow-black/20"
+                    >
+                      {/* Sliding Indicator */}
+                      <div
+                        className="absolute top-1.5 h-[calc(100%-12px)] bg-slate-900 dark:bg-white rounded-full shadow-sm pointer-events-none"
+                        style={{
+                          left: `${navIndicatorStyle2.left}px`,
+                          width: `${navIndicatorStyle2.width}px`,
+                          opacity: navIndicatorStyle2.width > 0 ? 1 : 0,
+                          transition: 'left 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), width 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.2s ease-out'
+                        }}
+                      />
                       <Link
+                        ref={(el) => (navButtonRefs2.current['home'] = el)}
                         to="/"
-                        className={`p-2.5 rounded-full transition-all duration-200 ${
+                        className={`relative z-10 p-2.5 rounded-full transition-all duration-200 active:scale-95 hover:scale-110 ${
                           isHome
-                            ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-sm'
-                            : 'text-slate-500 hover:bg-gray-100 dark:text-slate-400 dark:hover:bg-slate-700'
+                            ? 'text-white dark:text-slate-900'
+                            : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'
                         }`}
                         title="Home"
                       >
                         <HomeIcon size={18} strokeWidth={2.5} />
                       </Link>
                       <Link
+                        ref={(el) => (navButtonRefs2.current['about'] = el)}
                         to="/about"
-                className={`p-2.5 rounded-full transition-all duration-200 ${
+                        className={`relative z-10 p-2.5 rounded-full transition-all duration-200 active:scale-95 hover:scale-110 ${
                           !isHome
-                    ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-sm' 
-                    : 'text-slate-500 hover:bg-gray-100 dark:text-slate-400 dark:hover:bg-slate-700'
-                }`}
+                            ? 'text-white dark:text-slate-900'
+                            : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'
+                        }`}
                         title="About"
-              >
+                      >
                         <Info size={18} strokeWidth={2.5} />
                       </Link>
                     </div>
@@ -684,9 +932,9 @@ function AppContent() {
             {isHome && (
               <button
                 onClick={() => setIsModalOpen(true)}
-                className="relative flex flex-col items-center gap-1.5 px-5 py-2 active:scale-95 transition-transform flex-1"
+                className="relative flex flex-col items-center gap-1.5 px-5 py-2 active:scale-90 transition-all flex-1"
               >
-                <div className="p-2.5 rounded-2xl bg-gradient-to-br from-blue-600 to-purple-600 shadow-2xl shadow-blue-600/40">
+                <div className="p-2.5 rounded-2xl bg-gradient-to-br from-blue-600 to-purple-600 shadow-2xl shadow-blue-600/40 transition-transform hover:scale-110">
                   <Plus size={26} strokeWidth={3} className="text-white" />
                 </div>
                 <span className="text-xs font-semibold text-slate-700 dark:text-slate-300">
@@ -765,6 +1013,46 @@ function App() {
   const [isCalendarView, setIsCalendarView] = useState(false);
   const [isReportView, setIsReportView] = useState(false);
 
+  // Funzione per l'effetto confetti quando si completa una task
+  const triggerConfetti = () => {
+    const duration = 1.5 * 1000; // Ridotto da 3 secondi a 1.5 secondi
+    const animationEnd = Date.now() + duration;
+    const defaults = { 
+      startVelocity: 30, 
+      spread: 360, 
+      ticks: 50, // Ridotto da 60 a 50 per particelle più veloci
+      zIndex: 99999 
+    };
+
+    function randomInRange(min: number, max: number) {
+      return Math.random() * (max - min) + min;
+    }
+
+    const interval: ReturnType<typeof setInterval> = setInterval(function() {
+      const timeLeft = animationEnd - Date.now();
+
+      if (timeLeft <= 0) {
+        return clearInterval(interval);
+      }
+
+      const particleCount = 50 * (timeLeft / duration);
+
+      // Confetti dal basso verso l'alto
+      confetti({
+        ...defaults,
+        particleCount,
+        origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 },
+        colors: ['#10b981', '#34d399', '#6ee7b7', '#a7f3d0']
+      });
+      confetti({
+        ...defaults,
+        particleCount,
+        origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 },
+        colors: ['#10b981', '#34d399', '#6ee7b7', '#a7f3d0']
+      });
+    }, 250);
+  };
+
   // Gestione Dark Mode
   useEffect(() => {
     if (isDark) document.documentElement.classList.add('dark');
@@ -788,7 +1076,8 @@ function App() {
       isModalOpen, setIsModalOpen, 
       user, setUser,
       isCalendarView, setIsCalendarView,
-      isReportView, setIsReportView
+      isReportView, setIsReportView,
+      triggerConfetti
     }}>
       <BrowserRouter>
         <AppContent />

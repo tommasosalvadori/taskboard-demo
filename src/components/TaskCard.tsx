@@ -6,9 +6,10 @@ interface TaskCardProps {
   task: Task;
   onEdit: (task: Task) => void;
   onDelete: (taskId: string) => void;
+  index?: number;
 }
 
-function TaskCard({ task, onEdit }: TaskCardProps) {
+function TaskCard({ task, onEdit, index = 0 }: TaskCardProps) {
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'completed': return 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400';
@@ -52,7 +53,11 @@ function TaskCard({ task, onEdit }: TaskCardProps) {
   return (
     <article 
       onClick={() => onEdit(task)}
-      className="group bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-2xl p-6 hover:shadow-xl hover:shadow-gray-200/50 dark:hover:shadow-black/20 hover:-translate-y-1 transition-all duration-300 cursor-pointer"
+      className="group bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-2xl p-6 hover:shadow-xl hover:shadow-gray-200/50 dark:hover:shadow-black/20 hover:-translate-y-1 transition-all duration-300 cursor-pointer animate-fade-in-up"
+      style={{
+        animationDelay: `${index * 0.05}s`,
+        animationFillMode: 'backwards'
+      }}
     >
       <div className="flex justify-between items-start mb-4">
         <span className={`text-xs font-bold px-2.5 py-1 rounded-full uppercase tracking-wider whitespace-nowrap ${getStatusColor(task.status)}`}>

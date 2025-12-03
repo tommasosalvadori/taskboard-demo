@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { X, Trash2, Calendar, AlertCircle } from 'lucide-react';
 import type { Task } from '../types';
+import { useAppContext } from '../App';
 
 interface TaskModalProps {
   task: Task | null;
@@ -10,6 +11,7 @@ interface TaskModalProps {
 }
 
 function TaskModal({ task, onClose, onSave, onDelete }: TaskModalProps) {
+  const { triggerConfetti } = useAppContext();
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [status, setStatus] = useState<'todo' | 'in-progress' | 'completed'>('todo');
@@ -18,12 +20,14 @@ function TaskModal({ task, onClose, onSave, onDelete }: TaskModalProps) {
   const [difficulty, setDifficulty] = useState<'low' | 'medium' | 'high'>('medium');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [dateError, setDateError] = useState('');
+  const [previousStatus, setPreviousStatus] = useState<'todo' | 'in-progress' | 'completed'>('todo');
 
   useEffect(() => {
     if (task) {
       setTitle(task.title);
       setDescription(task.description);
       setStatus(task.status);
+      setPreviousStatus(task.status);
       setStartDate(task.startDate || '');
       setDueDate(task.dueDate || '');
       setDifficulty(task.difficulty || 'medium');
@@ -31,6 +35,7 @@ function TaskModal({ task, onClose, onSave, onDelete }: TaskModalProps) {
       setTitle('');
       setDescription('');
       setStatus('todo');
+      setPreviousStatus('todo');
       setStartDate('');
       setDueDate('');
       setDifficulty('medium');
@@ -75,6 +80,11 @@ function TaskModal({ task, onClose, onSave, onDelete }: TaskModalProps) {
 
     await onSave(taskData);
     setIsSubmitting(false);
+
+    // Trigger confetti se il task è stato completato
+    if (status === 'completed' && previousStatus !== 'completed') {
+      triggerConfetti();
+    }
   };
 
   const handleDelete = () => {
@@ -94,8 +104,14 @@ function TaskModal({ task, onClose, onSave, onDelete }: TaskModalProps) {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/20 dark:bg-black/50 backdrop-blur-sm animate-in fade-in duration-200">
-      <div className="bg-white dark:bg-slate-800 w-full max-w-md rounded-2xl shadow-2xl border border-gray-100 dark:border-slate-700 p-6 animate-in zoom-in-95 duration-200 max-h-[90vh] overflow-y-auto">
+    <div 
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/30 dark:bg-black/60 backdrop-blur-sm animate-fade-in"
+      onClick={onClose}
+    >
+      <div 
+        className="bg-white dark:bg-slate-800 w-full max-w-md rounded-2xl shadow-2xl border border-gray-100 dark:border-slate-700 p-6 animate-scale-in max-h-[90vh] overflow-y-auto"
+        onClick={(e) => e.stopPropagation()}
+      >
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-xl font-bold text-slate-800 dark:text-white">
             {task ? 'Modifica Task' : 'Nuovo Task'}
@@ -116,7 +132,7 @@ function TaskModal({ task, onClose, onSave, onDelete }: TaskModalProps) {
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="Cosa devi fare?"
-              className="w-full px-4 py-3 rounded-xl bg-gray-50 dark:bg-slate-900 border-transparent focus:border-blue-500 focus:bg-white dark:focus:bg-slate-900 focus:ring-0 transition-all dark:text-white"
+              className="w-full px-4 py-3 rounded-xl bg-gray-50 dark:bg-slate-900 border-transparent focus:border-blue-500 focus:bg-white dark:focus:bg-slate-900 focus:ring-0 focus:scale-[1.01] transition-all dark:text-white"
               autoFocus
             />
           </div>
@@ -128,7 +144,7 @@ function TaskModal({ task, onClose, onSave, onDelete }: TaskModalProps) {
               onChange={(e) => setDescription(e.target.value)}
               placeholder="Aggiungi qualche dettaglio..."
               rows={3}
-              className="w-full px-4 py-3 rounded-xl bg-gray-50 dark:bg-slate-900 border-transparent focus:border-blue-500 focus:bg-white dark:focus:bg-slate-900 focus:ring-0 transition-all dark:text-white resize-none"
+              className="w-full px-4 py-3 rounded-xl bg-gray-50 dark:bg-slate-900 border-transparent focus:border-blue-500 focus:bg-white dark:focus:bg-slate-900 focus:ring-0 focus:scale-[1.01] transition-all dark:text-white resize-none"
             />
           </div>
 
@@ -175,10 +191,10 @@ function TaskModal({ task, onClose, onSave, onDelete }: TaskModalProps) {
                   key={diff}
                   type="button"
                   onClick={() => setDifficulty(diff)}
-                  className={`px-4 py-2.5 rounded-xl font-medium text-sm transition-all ${
+                  className={`px-4 py-2.5 rounded-xl font-medium text-sm transition-all active:scale-95 ${
                     difficulty === diff
-                      ? getDifficultyColor(diff) + ' ring-2 ring-offset-2 ring-current dark:ring-offset-slate-800'
-                      : 'bg-gray-100 dark:bg-slate-900 text-slate-600 dark:text-slate-400 hover:bg-gray-200 dark:hover:bg-slate-700'
+                      ? getDifficultyColor(diff) + ' ring-2 ring-offset-2 ring-current dark:ring-offset-slate-800 scale-105'
+                      : 'bg-gray-100 dark:bg-slate-900 text-slate-600 dark:text-slate-400 hover:bg-gray-200 dark:hover:bg-slate-700 hover:scale-105'
                   }`}
                 >
                   {diff === 'low' ? 'Bassa' : diff === 'medium' ? 'Media' : 'Alta'}
@@ -205,7 +221,7 @@ function TaskModal({ task, onClose, onSave, onDelete }: TaskModalProps) {
               <button 
                 type="button"
                 onClick={handleDelete}
-                className="px-4 py-2.5 rounded-xl font-medium text-red-600 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-900/20 transition-colors flex items-center gap-2"
+                className="px-4 py-2.5 rounded-xl font-medium text-red-600 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-900/20 transition-all active:scale-95 flex items-center gap-2"
               >
                 <Trash2 size={18} />
                 <span>Elimina</span>
@@ -218,14 +234,14 @@ function TaskModal({ task, onClose, onSave, onDelete }: TaskModalProps) {
               <button 
                 type="button"
                 onClick={onClose}
-                className="px-5 py-2.5 rounded-xl font-medium text-slate-600 hover:bg-gray-100 dark:text-slate-300 dark:hover:bg-slate-700 transition-colors"
+                className="px-5 py-2.5 rounded-xl font-medium text-slate-600 hover:bg-gray-100 dark:text-slate-300 dark:hover:bg-slate-700 transition-all active:scale-95"
               >
                 Annulla
               </button>
               <button 
                 type="submit"
                 disabled={!title.trim() || isSubmitting || !!dateError}
-                className="px-5 py-2.5 rounded-xl font-medium bg-slate-900 dark:bg-white text-white dark:text-slate-900 hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg shadow-slate-200 dark:shadow-none"
+                className="px-5 py-2.5 rounded-xl font-medium bg-slate-900 dark:bg-white text-white dark:text-slate-900 hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg shadow-slate-200 dark:shadow-none active:scale-95"
               >
                 {isSubmitting ? 'Salvataggio...' : task ? 'Aggiorna' : 'Crea Task'}
               </button>

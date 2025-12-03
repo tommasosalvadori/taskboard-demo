@@ -14,7 +14,7 @@ import { formatDateToInput } from '../utils/dateUtils';
 function Home() {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [editingTask, setEditingTask] = useState<Task | null>(null);
-  const { filter, setFilter, difficultyFilter, dateFilter, setDifficultyFilter, setDateFilter, isModalOpen, setIsModalOpen, isCalendarView, setIsCalendarView, isReportView } = useAppContext();
+  const { filter, setFilter, difficultyFilter, dateFilter, setDifficultyFilter, setDateFilter, isModalOpen, setIsModalOpen, isCalendarView, setIsCalendarView, isReportView, setIsReportView } = useAppContext();
 
   // Carica i task iniziali
   useEffect(() => {
@@ -161,6 +161,10 @@ function Home() {
 
   // Gestisci click su statistiche
   const handleStatClick = (type: 'all' | 'completed' | 'overdue' | 'todo' | 'in-progress' | 'not-started') => {
+    // Reset viste calendario e report per mostrare la vista task
+    setIsCalendarView(false);
+    setIsReportView(false);
+    
     // Scroll to top
     window.scrollTo({ top: 0, behavior: 'smooth' });
     
@@ -195,6 +199,21 @@ function Home() {
     }
   };
 
+  // Gestisci click su difficoltà
+  const handleDifficultyClick = (difficulty: 'low' | 'medium' | 'high') => {
+    // Reset viste calendario e report per mostrare la vista task
+    setIsCalendarView(false);
+    setIsReportView(false);
+    
+    // Scroll to top
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    
+    // Reset altri filtri e applica filtro difficoltà
+    setFilter('all');
+    setDateFilter('all');
+    setDifficultyFilter(difficulty);
+  };
+
   return (
     <div className="min-h-screen flex flex-col relative pb-[6.75rem] lg:pb-0 pt-20 lg:pt-36 xl:pt-32 font-sans transition-colors duration-300">
       
@@ -216,11 +235,19 @@ function Home() {
         
         {/* Vista Report */}
         {isReportView ? (
-          <ReportBlock tasks={tasks} />
+          <div className="animate-fade-in-up">
+            <ReportBlock 
+              tasks={tasks} 
+              onStatClick={handleStatClick}
+              onDifficultyClick={handleDifficultyClick}
+            />
+          </div>
         ) : isCalendarView ? (
-          <CalendarBlock tasks={tasks} onDayClick={handleDayClick} />
+          <div className="animate-fade-in-up">
+            <CalendarBlock tasks={tasks} onDayClick={handleDayClick} />
+          </div>
         ) : (
-          <>
+          <div className="animate-fade-in-up">
             {/* Pannello Filtri Avanzati - Hidden on Mobile */}
             <div className="hidden lg:block">
               <FilterPanel 
@@ -233,10 +260,11 @@ function Home() {
 
             {/* Griglia Task */}
             <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-              {filteredTasks.map(task => (
+              {filteredTasks.map((task, index) => (
                 <TaskCard
                   key={task.id}
                   task={task}
+                  index={index}
                   onEdit={handleEditTask}
                   onDelete={handleDeleteTask}
                 />
@@ -244,8 +272,8 @@ function Home() {
             </div>
 
             {filteredTasks.length === 0 && (
-              <div className="text-center py-20 animate-in fade-in slide-in-from-bottom-4 duration-500">
-                <div className="inline-flex p-4 rounded-full bg-gray-50 dark:bg-slate-800/50 mb-4 text-slate-300 dark:text-slate-600">
+              <div className="text-center py-20 animate-fade-in-up">
+                <div className="inline-flex p-4 rounded-full bg-gray-50 dark:bg-slate-800/50 mb-4 text-slate-300 dark:text-slate-600 animate-pulse">
                   <LayoutGrid size={48} strokeWidth={1} />
                 </div>
                 <p className="text-slate-500 dark:text-slate-400 text-lg">
@@ -253,7 +281,7 @@ function Home() {
                 </p>
               </div>
             )}
-          </>
+          </div>
         )}
       </main>
 

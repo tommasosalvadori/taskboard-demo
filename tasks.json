@@ -4,7 +4,7 @@
       "id": "1",
       "title": "Setup project",
       "description": "Initialize React project with Vite",
-      "status": "in-progress",
+      "status": "completed",
       "createdAt": "2025-12-01T10:00:00Z",
       "startDate": "2025-11-28",
       "dueDate": "2025-12-01",
@@ -14,7 +14,7 @@
       "id": "2",
       "title": "Configure fake API",
       "description": "Setup json-server with tasks endpoint",
-      "status": "in-progress",
+      "status": "completed",
       "createdAt": "2025-12-02T09:00:00Z",
       "startDate": "2025-12-01",
       "dueDate": "2025-12-05",
@@ -64,7 +64,7 @@
       "id": "4bb2",
       "title": "yh64n",
       "description": "y6n",
-      "status": "todo",
+      "status": "in-progress",
       "startDate": "2025-12-06",
       "dueDate": "2025-12-10",
       "difficulty": "medium",
@@ -74,7 +74,7 @@
       "id": "dba5",
       "title": "6by6",
       "description": "by6h",
-      "status": "in-progress",
+      "status": "completed",
       "startDate": "2025-12-03",
       "dueDate": "2026-01-01",
       "difficulty": "high",
@@ -139,6 +139,16 @@
       "dueDate": "2025-12-02",
       "difficulty": "medium",
       "createdAt": "2025-12-03T09:50:10.560Z"
+    },
+    {
+      "id": "a09a",
+      "title": "h6nbh",
+      "description": "hbyb",
+      "status": "todo",
+      "startDate": "2025-12-12",
+      "dueDate": "2025-12-19",
+      "difficulty": "medium",
+      "createdAt": "2025-12-03T11:55:27.712Z"
     }
   ]
 }
