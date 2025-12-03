@@ -6,12 +6,14 @@ import TaskModal from '../components/TaskModal';
 import FilterPanel from '../components/FilterPanel';
 import StatsPanel from '../components/StatsPanel';
 import Footer from '../components/Footer';
+import CalendarBlock from '../components/CalendarBlock';
 import type { Task } from '../types';
+import { formatDateToInput } from '../utils/dateUtils';
 
 function Home() {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [editingTask, setEditingTask] = useState<Task | null>(null);
-  const { filter, setFilter, difficultyFilter, dateFilter, setDifficultyFilter, setDateFilter, isModalOpen, setIsModalOpen } = useAppContext();
+  const { filter, setFilter, difficultyFilter, dateFilter, setDifficultyFilter, setDateFilter, isModalOpen, setIsModalOpen, isCalendarView, setIsCalendarView } = useAppContext();
 
   // Carica i task iniziali
   useEffect(() => {
@@ -34,6 +36,12 @@ function Home() {
       const now = new Date();
       const dueDate = task.dueDate ? new Date(task.dueDate) : null;
       const startDate = task.startDate ? new Date(task.startDate) : null;
+
+      // Se dateFilter è una data specifica (formato YYYY-MM-DD)
+      if (dateFilter.match(/^\d{4}-\d{2}-\d{2}$/)) {
+        // Mostra task che iniziano O scadono in quel giorno
+        return task.startDate === dateFilter || task.dueDate === dateFilter;
+      }
 
       switch (dateFilter) {
         case 'overdue':
@@ -132,6 +140,24 @@ function Home() {
     handleCloseModal();
   };
 
+  // Gestisci click su giorno del calendario
+  const handleDayClick = (date: Date) => {
+    const dateString = formatDateToInput(date);
+    
+    // Torna alla vista task
+    setIsCalendarView(false);
+    
+    // Reset filtri
+    setFilter('all');
+    setDifficultyFilter('all');
+    
+    // Imposta filtro per quel giorno specifico
+    setDateFilter(dateString);
+    
+    // Scroll to top
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   // Gestisci click su statistiche
   const handleStatClick = (type: 'all' | 'completed' | 'overdue' | 'todo' | 'in-progress' | 'not-started') => {
     // Scroll to top
@@ -184,39 +210,47 @@ function Home() {
       {/* Stats Panel - Sidebar Desktop + Barra Mobile */}
       <StatsPanel tasks={tasks} onStatClick={handleStatClick} />
 
-      {/* Griglia Task */}
+      {/* Contenuto Principale */}
       <main className="max-w-4xl mx-auto flex-1 w-full px-4 sm:px-6 lg:px-8 mb-12">
         
-        {/* Pannello Filtri Avanzati - Hidden on Mobile */}
-        <div className="hidden lg:block">
-          <FilterPanel 
-            difficultyFilter={difficultyFilter}
-            setDifficultyFilter={setDifficultyFilter}
-            dateFilter={dateFilter}
-            setDateFilter={setDateFilter}
-          />
-        </div>
-
-        <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-          {filteredTasks.map(task => (
-            <TaskCard
-              key={task.id}
-              task={task}
-              onEdit={handleEditTask}
-              onDelete={handleDeleteTask}
-            />
-          ))}
-        </div>
-
-        {filteredTasks.length === 0 && (
-          <div className="text-center py-20 animate-in fade-in slide-in-from-bottom-4 duration-500">
-            <div className="inline-flex p-4 rounded-full bg-gray-50 dark:bg-slate-800/50 mb-4 text-slate-300 dark:text-slate-600">
-              <LayoutGrid size={48} strokeWidth={1} />
+        {/* Vista Calendario */}
+        {isCalendarView ? (
+          <CalendarBlock tasks={tasks} onDayClick={handleDayClick} />
+        ) : (
+          <>
+            {/* Pannello Filtri Avanzati - Hidden on Mobile */}
+            <div className="hidden lg:block">
+              <FilterPanel 
+                difficultyFilter={difficultyFilter}
+                setDifficultyFilter={setDifficultyFilter}
+                dateFilter={dateFilter}
+                setDateFilter={setDateFilter}
+              />
             </div>
-            <p className="text-slate-500 dark:text-slate-400 text-lg">
-              Nessun task trovato con i filtri selezionati.
-            </p>
-          </div>
+
+            {/* Griglia Task */}
+            <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+              {filteredTasks.map(task => (
+                <TaskCard
+                  key={task.id}
+                  task={task}
+                  onEdit={handleEditTask}
+                  onDelete={handleDeleteTask}
+                />
+              ))}
+            </div>
+
+            {filteredTasks.length === 0 && (
+              <div className="text-center py-20 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                <div className="inline-flex p-4 rounded-full bg-gray-50 dark:bg-slate-800/50 mb-4 text-slate-300 dark:text-slate-600">
+                  <LayoutGrid size={48} strokeWidth={1} />
+                </div>
+                <p className="text-slate-500 dark:text-slate-400 text-lg">
+                  Nessun task trovato con i filtri selezionati.
+                </p>
+              </div>
+            )}
+          </>
         )}
       </main>
 

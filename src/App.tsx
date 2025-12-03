@@ -13,7 +13,8 @@ import {
   LogIn,
   LogOut,
   Menu,
-  X
+  X,
+  Calendar
 } from 'lucide-react';
 import Home from './pages/Home';
 import About from './pages/About';
@@ -33,6 +34,8 @@ interface AppContextType {
   setIsModalOpen: (value: boolean) => void;
   user: User | null;
   setUser: (user: User | null) => void;
+  isCalendarView: boolean;
+  setIsCalendarView: (value: boolean) => void;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -45,7 +48,7 @@ export const useAppContext = () => {
 
 function AppContent() {
   const location = useLocation();
-  const { isDark, setIsDark, filter, setFilter, difficultyFilter, setDifficultyFilter, dateFilter, setDateFilter, setIsModalOpen, user, setUser } = useAppContext();
+  const { isDark, setIsDark, filter, setFilter, difficultyFilter, setDifficultyFilter, dateFilter, setDateFilter, setIsModalOpen, user, setUser, isCalendarView, setIsCalendarView } = useAppContext();
   const isHome = location.pathname === '/';
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -156,10 +159,13 @@ function AppContent() {
                 ].map(({ id, icon: Icon, label }) => (
                   <button
                     key={id}
-                    onClick={() => setFilter(id)}
+                    onClick={() => {
+                      setFilter(id);
+                      setIsCalendarView(false);
+                    }}
                     title={label}
                     className={`p-2.5 rounded-full transition-all duration-200 ${
-                      filter === id 
+                      filter === id && !isCalendarView
                         ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-sm' 
                         : 'text-slate-500 hover:bg-gray-100 dark:text-slate-400 dark:hover:bg-slate-700'
                     }`}
@@ -167,6 +173,20 @@ function AppContent() {
                     <Icon size={18} strokeWidth={2.5} />
                   </button>
                 ))}
+
+                <div className="w-px h-6 bg-gray-200 dark:bg-slate-700 mx-1"></div>
+
+                <button
+                  onClick={() => setIsCalendarView(!isCalendarView)}
+                  title="Calendario"
+                  className={`p-2.5 rounded-full transition-all duration-200 ${
+                    isCalendarView
+                      ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-sm'
+                      : 'text-slate-500 hover:bg-gray-100 dark:text-slate-400 dark:hover:bg-slate-700'
+                  }`}
+                >
+                  <Calendar size={18} strokeWidth={2.5} />
+                </button>
 
                 <div className="w-px h-6 bg-gray-200 dark:bg-slate-700 mx-1"></div>
 
@@ -487,6 +507,30 @@ function AppContent() {
             <div className="border-t border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 animate-in slide-in-from-top-2 duration-200 max-h-[70vh] overflow-y-auto">
               <div className="p-4 space-y-6">
                 
+                {/* Vista Calendario */}
+                <div>
+                  <div className="text-xs font-semibold text-slate-500 dark:text-slate-400 mb-3">VISTA</div>
+                  <div className="space-y-2">
+                    <button
+                      onClick={() => {
+                        setIsCalendarView(!isCalendarView);
+                        setIsMobileMenuOpen(false);
+                      }}
+                      className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${
+                        isCalendarView
+                          ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900' 
+                          : 'text-slate-600 dark:text-slate-300 hover:bg-gray-100 dark:hover:bg-slate-800'
+                      }`}
+                    >
+                      <Calendar size={20} strokeWidth={2.5} />
+                      <span className="font-medium">Calendario</span>
+                    </button>
+                  </div>
+                </div>
+
+                {/* Separatore */}
+                <div className="border-t border-gray-200 dark:border-slate-700"></div>
+
                 {/* Filtri Stato */}
                 <div>
                   <div className="text-xs font-semibold text-slate-500 dark:text-slate-400 mb-3">STATO</div>
@@ -499,9 +543,12 @@ function AppContent() {
                     ].map(({ id, icon: Icon, label }) => (
                       <button
                         key={id}
-                        onClick={() => setFilter(id)}
+                        onClick={() => {
+                          setFilter(id);
+                          setIsCalendarView(false);
+                        }}
                         className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${
-                          filter === id 
+                          filter === id && !isCalendarView
                             ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900' 
                             : 'text-slate-600 dark:text-slate-300 hover:bg-gray-100 dark:hover:bg-slate-800'
                         }`}
@@ -656,6 +703,7 @@ function App() {
   const [dateFilter, setDateFilter] = useState<string>('all');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [user, setUser] = useState<User | null>(null);
+  const [isCalendarView, setIsCalendarView] = useState(false);
 
   // Gestione Dark Mode
   useEffect(() => {
@@ -683,7 +731,8 @@ function App() {
       difficultyFilter, setDifficultyFilter,
       dateFilter, setDateFilter,
       isModalOpen, setIsModalOpen, 
-      user, setUser 
+      user, setUser,
+      isCalendarView, setIsCalendarView
     }}>
       <BrowserRouter>
         <AppContent />

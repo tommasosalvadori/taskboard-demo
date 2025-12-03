@@ -1,5 +1,6 @@
 import { Clock, Calendar, AlertTriangle } from 'lucide-react';
 import type { Task } from '../types';
+import { parseLocalDate } from '../utils/dateUtils';
 
 interface TaskCardProps {
   task: Task;
@@ -36,13 +37,16 @@ function TaskCard({ task, onEdit }: TaskCardProps) {
 
   const formatDate = (dateString?: string) => {
     if (!dateString) return null;
-    const date = new Date(dateString);
+    const date = parseLocalDate(dateString);
     return date.toLocaleDateString('it-IT', { day: 'numeric', month: 'short' });
   };
 
   const isOverdue = () => {
     if (!task.dueDate || task.status === 'completed') return false;
-    return new Date(task.dueDate) < new Date();
+    const dueDate = parseLocalDate(task.dueDate);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    return dueDate < today;
   };
 
   return (

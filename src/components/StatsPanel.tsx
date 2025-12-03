@@ -162,23 +162,26 @@ function StatsPanel({ tasks, onStatClick }: StatsPanelProps) {
         </div>
       </aside>
 
-      {/* MOBILE - Solo le principali 4 metriche */}
+      {/* MOBILE - Tutte le metriche in formato compatto */}
       <div className="xl:hidden mb-6">
-        <div className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-md border border-gray-200 dark:border-slate-700 rounded-2xl shadow-lg p-4">
-          <div className="grid grid-cols-4 gap-3">
-            {stats.slice(0, 4).map((stat) => {
+        <div className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-md border border-gray-200 dark:border-slate-700 rounded-2xl shadow-lg p-3">
+          <div className="grid grid-cols-3 gap-2">
+            {stats.map((stat) => {
               const Icon = stat.icon;
               return (
                 <button
                   key={stat.label}
                   onClick={() => onStatClick(stat.type)}
-                  className={`${stat.bgColor} rounded-xl p-3 text-center transition-all hover:scale-105 cursor-pointer active:scale-100`}
+                  className={`${stat.bgColor} rounded-xl p-2 text-center transition-all hover:scale-105 cursor-pointer active:scale-100`}
                 >
-                  <div className={`inline-flex p-2 rounded-lg bg-white dark:bg-slate-800 mb-2 ${stat.color}`}>
-                    <Icon size={18} strokeWidth={2.5} />
+                  <div className={`inline-flex p-1.5 rounded-lg bg-white dark:bg-slate-800 mb-1 ${stat.color}`}>
+                    <Icon size={14} strokeWidth={2.5} />
                   </div>
-                  <div className={`text-2xl font-bold ${stat.color}`}>
+                  <div className={`text-xl font-bold ${stat.color} leading-none mb-0.5`}>
                     {stat.value}
+                  </div>
+                  <div className="text-[9px] font-medium text-slate-600 dark:text-slate-400 leading-tight">
+                    {stat.label}
                   </div>
                 </button>
               );
