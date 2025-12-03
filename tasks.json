@@ -4,11 +4,11 @@
       "id": "1",
       "title": "Setup project",
       "description": "Initialize React project with Vite",
-      "status": "completed",
+      "status": "in-progress",
       "createdAt": "2025-12-01T10:00:00Z",
       "startDate": "2025-11-28",
       "dueDate": "2025-12-01",
-      "difficulty": "low"
+      "difficulty": "medium"
     },
     {
       "id": "2",
@@ -36,7 +36,7 @@
       "description": "test",
       "status": "completed",
       "createdAt": "2025-12-02T13:55:59.462Z",
-      "startDate": "2025-12-05",
+      "startDate": "2025-12-03",
       "dueDate": "2025-12-12",
       "difficulty": "high"
     },
@@ -69,6 +69,66 @@
       "dueDate": "2025-12-10",
       "difficulty": "medium",
       "createdAt": "2025-12-02T15:38:56.310Z"
+    },
+    {
+      "id": "dba5",
+      "title": "6by6",
+      "description": "by6h",
+      "status": "in-progress",
+      "startDate": "2025-12-03",
+      "dueDate": "2026-01-01",
+      "difficulty": "high",
+      "createdAt": "2025-12-03T08:42:38.947Z"
+    },
+    {
+      "id": "73b5",
+      "title": "nh6ng",
+      "description": "bggv",
+      "status": "todo",
+      "startDate": "2025-12-06",
+      "dueDate": "2025-12-19",
+      "difficulty": "low",
+      "createdAt": "2025-12-03T08:42:50.100Z"
+    },
+    {
+      "id": "0e6a",
+      "title": "9ijn7",
+      "description": "d4vb",
+      "status": "todo",
+      "startDate": "2025-12-04",
+      "dueDate": "2025-12-18",
+      "difficulty": "medium",
+      "createdAt": "2025-12-03T08:43:00.816Z"
+    },
+    {
+      "id": "6010",
+      "title": "v4vg",
+      "description": "cf4vf",
+      "status": "completed",
+      "startDate": "2025-12-02",
+      "dueDate": "2025-12-12",
+      "difficulty": "medium",
+      "createdAt": "2025-12-03T08:43:19.693Z"
+    },
+    {
+      "id": "a7be",
+      "title": "vg4 ",
+      "description": "c4xf",
+      "status": "todo",
+      "startDate": "2025-12-13",
+      "dueDate": "2025-12-18",
+      "difficulty": "high",
+      "createdAt": "2025-12-03T08:43:28.361Z"
+    },
+    {
+      "id": "3be8",
+      "title": "cf4v",
+      "description": "ds3d",
+      "status": "todo",
+      "startDate": "2025-12-10",
+      "dueDate": "2025-12-16",
+      "difficulty": "medium",
+      "createdAt": "2025-12-03T08:43:37.402Z"
     }
   ]
 }

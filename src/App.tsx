@@ -186,31 +186,31 @@ function AppContent() {
                 
                 <div className="flex items-center gap-3">
                   <nav className="flex-shrink-0">
-                    <div className="flex items-center gap-1 p-1.5 bg-white/80 dark:bg-slate-800/80 backdrop-blur-md border border-gray-200 dark:border-slate-700 rounded-full shadow-lg shadow-gray-200/50 dark:shadow-black/20">
-                      <Link
-                        to="/"
-                        className={`p-2.5 rounded-full transition-all duration-200 ${
-                          isHome
-                            ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-sm'
-                            : 'text-slate-500 hover:bg-gray-100 dark:text-slate-400 dark:hover:bg-slate-700'
-                        }`}
-                        title="Home"
-                      >
-                        <HomeIcon size={18} strokeWidth={2.5} />
-                      </Link>
-                      <Link
-                        to="/about"
-                        className={`p-2.5 rounded-full transition-all duration-200 ${
-                          !isHome
-                            ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-sm'
-                            : 'text-slate-500 hover:bg-gray-100 dark:text-slate-400 dark:hover:bg-slate-700'
-                        }`}
-                        title="About"
-                      >
-                        <Info size={18} strokeWidth={2.5} />
-                      </Link>
-                    </div>
-                  </nav>
+        <div className="flex items-center gap-1 p-1.5 bg-white/80 dark:bg-slate-800/80 backdrop-blur-md border border-gray-200 dark:border-slate-700 rounded-full shadow-lg shadow-gray-200/50 dark:shadow-black/20">
+          <Link
+            to="/"
+            className={`p-2.5 rounded-full transition-all duration-200 ${
+              isHome
+                ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-sm'
+                : 'text-slate-500 hover:bg-gray-100 dark:text-slate-400 dark:hover:bg-slate-700'
+            }`}
+            title="Home"
+          >
+            <HomeIcon size={18} strokeWidth={2.5} />
+          </Link>
+          <Link
+            to="/about"
+            className={`p-2.5 rounded-full transition-all duration-200 ${
+              !isHome
+                ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-sm'
+                : 'text-slate-500 hover:bg-gray-100 dark:text-slate-400 dark:hover:bg-slate-700'
+            }`}
+            title="About"
+          >
+            <Info size={18} strokeWidth={2.5} />
+          </Link>
+        </div>
+      </nav>
 
                   <button
                     onClick={() => setIsDark(!isDark)}
@@ -222,7 +222,7 @@ function AppContent() {
                 </div>
 
                 <div className="flex-shrink-0">
-                  <div className="flex items-center gap-1 p-1.5 bg-white/80 dark:bg-slate-800/80 backdrop-blur-md border border-gray-200 dark:border-slate-700 rounded-full shadow-lg shadow-gray-200/50 dark:shadow-black/20">
+          <div className="flex items-center gap-1 p-1.5 bg-white/80 dark:bg-slate-800/80 backdrop-blur-md border border-gray-200 dark:border-slate-700 rounded-full shadow-lg shadow-gray-200/50 dark:shadow-black/20">
                     {user ? (
                       <>
                         <div 
@@ -345,13 +345,13 @@ function AppContent() {
                       </Link>
                       <Link
                         to="/about"
-                        className={`p-2.5 rounded-full transition-all duration-200 ${
+                className={`p-2.5 rounded-full transition-all duration-200 ${
                           !isHome
-                            ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-sm'
-                            : 'text-slate-500 hover:bg-gray-100 dark:text-slate-400 dark:hover:bg-slate-700'
-                        }`}
+                    ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-sm' 
+                    : 'text-slate-500 hover:bg-gray-100 dark:text-slate-400 dark:hover:bg-slate-700'
+                }`}
                         title="About"
-                      >
+              >
                         <Info size={18} strokeWidth={2.5} />
                       </Link>
                     </div>
@@ -363,7 +363,7 @@ function AppContent() {
                     title="Cambia tema"
                   >
                     {isDark ? <Sun size={18} /> : <Moon size={18} />}
-                  </button>
+              </button>
                 </div>
 
                 <div className="flex-shrink-0">
@@ -398,13 +398,13 @@ function AppContent() {
                         </button>
                       </>
                     ) : (
-                      <button
+            <button
                         onClick={handleLogin}
-                        className="p-2.5 rounded-full bg-blue-600 text-white hover:bg-blue-700 shadow-md hover:shadow-lg transition-all"
+              className="p-2.5 rounded-full bg-blue-600 text-white hover:bg-blue-700 shadow-md hover:shadow-lg transition-all"
                         title="Login"
-                      >
+            >
                         <LogIn size={18} strokeWidth={2.5} />
-                      </button>
+            </button>
                     )}
                   </div>
                 </div>
@@ -421,7 +421,7 @@ function AppContent() {
         {/* Top Bar Mobile */}
         <div className="fixed top-0 left-0 right-0 z-50 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-b border-gray-200 dark:border-slate-700">
           <div className="flex items-center justify-between px-4 h-16">
-            
+
             {/* Dark Mode - Sinistra */}
             <button
               onClick={() => setIsDark(!isDark)}
@@ -548,12 +548,12 @@ function AppContent() {
                 </div>
 
                 {/* Pulsante Chiudi */}
-                <button
+          <button
                   onClick={() => setIsMobileMenuOpen(false)}
                   className="w-full px-4 py-3 rounded-lg bg-blue-600 text-white font-semibold hover:bg-blue-700 transition-colors"
-                >
+          >
                   Applica Filtri
-                </button>
+          </button>
 
               </div>
             </div>

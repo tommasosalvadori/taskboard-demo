@@ -4,13 +4,14 @@ import { useAppContext } from '../App';
 import TaskCard from '../components/TaskCard';
 import TaskModal from '../components/TaskModal';
 import FilterPanel from '../components/FilterPanel';
+import StatsPanel from '../components/StatsPanel';
 import Footer from '../components/Footer';
 import type { Task } from '../types';
 
 function Home() {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [editingTask, setEditingTask] = useState<Task | null>(null);
-  const { filter, difficultyFilter, dateFilter, setDifficultyFilter, setDateFilter, isModalOpen, setIsModalOpen } = useAppContext();
+  const { filter, setFilter, difficultyFilter, dateFilter, setDifficultyFilter, setDateFilter, isModalOpen, setIsModalOpen } = useAppContext();
 
   // Carica i task iniziali
   useEffect(() => {
@@ -131,6 +132,42 @@ function Home() {
     handleCloseModal();
   };
 
+  // Gestisci click su statistiche
+  const handleStatClick = (type: 'all' | 'completed' | 'overdue' | 'todo' | 'in-progress' | 'not-started') => {
+    // Scroll to top
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    
+    // Reset filtri avanzati prima di applicare il nuovo
+    setDifficultyFilter('all');
+    
+    switch (type) {
+      case 'all':
+        setFilter('all');
+        setDateFilter('all');
+        break;
+      case 'completed':
+        setFilter('completed');
+        setDateFilter('all');
+        break;
+      case 'overdue':
+        setFilter('all');
+        setDateFilter('overdue');
+        break;
+      case 'todo':
+        setFilter('todo');
+        setDateFilter('all');
+        break;
+      case 'in-progress':
+        setFilter('in-progress');
+        setDateFilter('all');
+        break;
+      case 'not-started':
+        setFilter('all');
+        setDateFilter('not-started');
+        break;
+    }
+  };
+
   return (
     <div className="min-h-screen flex flex-col relative pb-[6.75rem] lg:pb-0 pt-20 lg:pt-36 xl:pt-32 font-sans transition-colors duration-300">
       
@@ -143,6 +180,9 @@ function Home() {
           onDelete={handleDeleteTask}
         />
       )}
+
+      {/* Stats Panel - Sidebar Desktop + Barra Mobile */}
+      <StatsPanel tasks={tasks} onStatClick={handleStatClick} />
 
       {/* Griglia Task */}
       <main className="max-w-4xl mx-auto flex-1 w-full px-4 sm:px-6 lg:px-8 mb-12">
