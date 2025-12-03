@@ -19,3 +19,31 @@ export interface User {
   email: string;
   avatar?: string;
 }
+
+// Nuovi tipi per autenticazione
+export interface RegisteredUser {
+  id: string;
+  name: string;
+  email: string;
+  password: string; // Nella realtà sarebbe hashata
+  avatar?: string;
+  createdAt: string;
+}
+
+export interface AuthToken {
+  token: string;
+  userId: string;
+  expiresAt: number;
+}
+
+export interface LoginCredentials {
+  email: string;
+  password: string;
+}
+
+export interface RegisterData {
+  name: string;
+  email: string;
+  password: string;
+  confirmPassword: string;
+}

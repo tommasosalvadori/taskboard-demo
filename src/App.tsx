@@ -20,7 +20,11 @@ import {
 } from 'lucide-react';
 import Home from './pages/Home';
 import About from './pages/About';
+import Login from './pages/Login';
+import Register from './pages/Register';
+import ProtectedRoute from './components/ProtectedRoute';
 import type { User } from './types';
+import { getCurrentUser, logout as authLogout } from './utils/auth';
 
 // Context per dark mode, filtri e autenticazione
 interface AppContextType {
@@ -75,20 +79,10 @@ function AppContent() {
     setIsMobileMenuOpen(false);
   }, [location.pathname]);
 
-  // Funzioni di autenticazione (mock)
-  const handleLogin = () => {
-    const mockUser: User = {
-      id: '1',
-      name: 'Mario Rossi',
-      email: 'mario.rossi@email.com',
-    };
-    setUser(mockUser);
-    localStorage.setItem('user', JSON.stringify(mockUser));
-  };
-
+  // Funzioni di autenticazione
   const handleLogout = () => {
+    authLogout();
     setUser(null);
-    localStorage.removeItem('user');
   };
 
   const handleLogoClick = () => {
@@ -308,13 +302,13 @@ function AppContent() {
                         </button>
                       </>
                     ) : (
-                      <button
-                        onClick={handleLogin}
+                      <Link
+                        to="/login"
                         className="p-2.5 rounded-full bg-blue-600 text-white hover:bg-blue-700 shadow-md hover:shadow-lg transition-all"
                         title="Login"
                       >
                         <LogIn size={18} strokeWidth={2.5} />
-                      </button>
+                      </Link>
                     )}
                   </div>
                 </div>
@@ -453,13 +447,13 @@ function AppContent() {
                         </button>
                       </>
                     ) : (
-            <button
-                        onClick={handleLogin}
-              className="p-2.5 rounded-full bg-blue-600 text-white hover:bg-blue-700 shadow-md hover:shadow-lg transition-all"
+                      <Link
+                        to="/login"
+                        className="p-2.5 rounded-full bg-blue-600 text-white hover:bg-blue-700 shadow-md hover:shadow-lg transition-all"
                         title="Login"
-            >
+                      >
                         <LogIn size={18} strokeWidth={2.5} />
-            </button>
+                      </Link>
                     )}
                   </div>
                 </div>
@@ -516,13 +510,13 @@ function AppContent() {
                   <LogOut size={20} />
                 </button>
               ) : (
-                <button
-                  onClick={handleLogin}
+                <Link
+                  to="/login"
                   className="p-2 rounded-lg text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors"
                   title="Login"
                 >
                   <LogIn size={20} />
-                </button>
+                </Link>
               )}
 
               {/* Menu Button - Solo su Home */}
@@ -738,8 +732,24 @@ function AppContent() {
 
       {/* Routes */}
       <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/about" element={<About />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route 
+          path="/" 
+          element={
+            <ProtectedRoute>
+              <Home />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/about" 
+          element={
+            <ProtectedRoute>
+              <About />
+            </ProtectedRoute>
+          } 
+        />
       </Routes>
     </>
   );
@@ -763,14 +773,9 @@ function App() {
 
   // Ripristina utente da localStorage al caricamento
   useEffect(() => {
-    const savedUser = localStorage.getItem('user');
-    if (savedUser) {
-      try {
-        setUser(JSON.parse(savedUser));
-      } catch (error) {
-        console.error('Errore nel recupero utente:', error);
-        localStorage.removeItem('user');
-      }
+    const user = getCurrentUser();
+    if (user) {
+      setUser(user);
     }
   }, []);
 
